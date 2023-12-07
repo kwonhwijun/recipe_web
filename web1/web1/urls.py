@@ -23,4 +23,6 @@ urlpatterns = [
     path('test/', polls.views.selecttest, name='test'),
     path('login/', polls.views.login, name='login'),
     path('home/', polls.views.home, name='home'),
+    path('input/', polls.views.input, name='input'),
+    path('generic/', polls.views.generic, name='generic'),
 ]

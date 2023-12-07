@@ -56,3 +56,9 @@ def login(request):
 
 def home(request):
     return render(request, 'polls/home.html')
+
+def input(request):
+    return render(request, 'polls/input.html')
+
+def generic(request):
+    return render(request, 'polls/generic.html')
