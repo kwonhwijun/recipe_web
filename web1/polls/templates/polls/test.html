@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>테스트</title>
+</head>
+<body>
+<div>
+    <h1>영양소 리스트</h1>
+    <ul>
+        {% for test in tests %}
+        <li>
+            식재료명:{{test.nutri}}
+            <br>
+            에너지:{{test.energy}}
+            <br>
+            수분:{{test.water}}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+</body>
+</html>
