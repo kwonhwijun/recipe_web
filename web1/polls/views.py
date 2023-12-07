@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.template import loader
 from django.http import Http404
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login as auth_login
 from .models import Question
 import oracledb as od
 
@@ -40,3 +42,17 @@ def selecttest(request):
         print("Failed selecting")
     
     return render(request, 'polls/test.html', {'tests': tests})
+
+def login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, request.POST)
+        if form.is_valid():
+            auth_login(request, form.get_user())
+            return redirect('articles:index')
+    else:
+        form = AuthenticationForm()
+    context = {'form': form}    
+    return render(request, 'polls/login.html', context)
+
+def home(request):
+    return render(request, 'polls/home.html')
