@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.template import loader
 from django.http import Http404
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
+from django.http import JsonResponse
 from .models import Question
 import oracledb as od
 
@@ -19,40 +21,47 @@ def detail(request, question_id):
         raise Http404("Question does not exist")
     return render(request, 'polls/detail.html', {'question': question})
 
+
+@csrf_exempt
+def test(request):
+    return render(request, 'polls/test.html')
+
+@csrf_exempt
 def selecttest(request):
     try:
-        od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
-        conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
-        cursor = conn.cursor()
-        
-        query = 'select 대표식품명, "에너지(kcal)", "수분(g)" from nutrient_table'
-        cursor.execute(query)
-        datas = cursor.fetchall()
-        
-        conn.close()
-        
-        tests = []
-        for data in datas:
-            row = {'nutri': data[0],
-                   'energy': data[1],
-                   'water': data[2]}
-            tests.append(row)
-    except:
-        conn.rollback()
-        print("Failed selecting")
-    
-    return render(request, 'polls/test.html', {'tests': tests})
+        if request.method == 'POST':
+            input_value = request.POST.get('input_value')
 
-def login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, request.POST)
-        if form.is_valid():
-            auth_login(request, form.get_user())
-            return redirect('articles:index')
-    else:
-        form = AuthenticationForm()
-    context = {'form': form}    
-    return render(request, 'polls/login.html', context)
+            od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
+            conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
+            cursor = conn.cursor()
+
+            # 검색 조건
+            query = f'select nutrient, "에너지(Kcal)", "탄수화물", "단백질", "지방" from nutrient_data_table where nutrient like \'%{input_value}%\''
+            cursor.execute(query)
+            datas = cursor.fetchall()
+
+            conn.close()
+
+            tests = []
+            for data in datas:
+                row = {
+                    'nutri': data[0],
+                    'energy': data[1],
+                    'carbo': data[2],
+                    'protein': data[3],
+                    'fat': data[4]
+                }
+                tests.append(row)
+
+            return JsonResponse({'result': f'{input_value}', 'tests': tests})
+
+    except Exception as e:
+        conn.rollback()
+        print(f"조회 중 오류 발생: {str(e)}")
+
+    return JsonResponse({'error': 'error'})
+
 
 def home(request):
     return render(request, 'polls/home.html')

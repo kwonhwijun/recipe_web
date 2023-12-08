@@ -7,35 +7,47 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <body>
-<div>
-    <div class='test_div'>
-        안녕하세요
-    </div>
-    <button id='test_button'>테스트 버튼</button>
-    <button id='test_button1'>테스트 버튼</button>
-<div>
-<div>
-    <h1>영양소 리스트</h1>
-    <ul class="list-group list-group-numbered">
-        {% for test in tests %}
-        <li class="list-group-item">
-            식재료명:{{test.nutri}}
-            <br>
-            에너지:{{test.energy}}
-            <br>
-            수분:{{test.water}}
-        </li>
-        {% endfor %}
+    <h3>검색 test</h3>
+    <input type="text" id="search-input" placeholder="검색어를 입력하세요">
+
+    <button id="search-button">검색</button>
+
+    <ul id="test-list">
+        <!-- 검색결과 추가~ -->
     </ul>
-</div>
 
 </body>
 <script>
-    $('#test_button').click(function(){
-        $('.test_div').hide();
-    });
-    $('#test_button1').click(function(){
-        $('.test_div').show();
+    $(document).ready(function () {
+        function fetchTestResults(searchValue) {
+            $.ajax({
+                type: 'POST',
+                url: '{% url "polls:selecttest" %}',
+                data: {
+                    'input_value': searchValue
+                },
+                dataType: 'json',
+                success: function (data) {
+                    alert('검색한 식재료: ' + data.result)
+                    var testList = $('#test-list');
+                    testList.empty(); // 검색창 지우기
+
+                    $.each(data.tests, function (index, test) {
+                        var listItem = $('<li>').text(test.nutri + ' : 에너지: ' + test.energy + ', 탄수화물: '
+                            + test.carbo + ', 단백질' + test.protein + ', 지방' + test.fat);
+                        testList.append(listItem);
+                    });
+                },
+                error: function (error) {
+                    console.error('ajax 실패:', error);
+                }
+            });
+        }
+
+        $('#search-button').click(function () {
+            var searchValue = $('#search-input').val();
+            fetchTestResults(searchValue);
+        });
     });
 </script>
 
