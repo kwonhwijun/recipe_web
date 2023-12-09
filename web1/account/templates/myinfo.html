@@ -20,8 +20,8 @@
             <p class="card-text">가입일: {{ user.date_joined|date:"Y년 m월 d일 H시 i분" }}</p>
 
             <!-- 모달창 -->
-            <button id="deleteAccountBtn" class="btn btn-danger">계정 삭제</button>
-            <div id="deleteAccountModal" class="modal" tabindex="-1" role="dialog">
+            <button id="deletebtn" class="btn btn-danger">계정 삭제</button>
+            <div id="modal" class="modal" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -32,11 +32,11 @@
                         </div>
                         <div class="modal-body">
                             <p>비밀번호를 입력하세요:</p>
-                            <input type="password" id="passwordInput" class="form-control" />
+                            <input type="password" id="pw" class="form-control" />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-                            <button id="confirmDeleteBtn" class="btn btn-danger">확인</button>
+                            <button id="confbtn" class="btn btn-danger">확인</button>
                         </div>
                     </div>
                 </div>
@@ -49,12 +49,12 @@
     </div>
     <script>
     $(document).ready(function () {
-        $('#deleteAccountBtn').click(function () {
-            $('#deleteAccountModal').modal('show');
+        $('#deletebtn').click(function () {
+            $('#modal').modal('show');
         });
 
-        $('#confirmDeleteBtn').click(function () {
-            var password = $('#passwordInput').val();
+        $('#confbtn').click(function () {
+            var password = $('#pw').val();
 
             $.ajax({
                 type: 'POST',
@@ -65,7 +65,7 @@
                 },
                 success: function (data) {
                     // 응답이 성공적으로 완료되면 모달을 닫고 리다이렉트
-                    $('#deleteAccountModal').modal('hide');
+                    $('#modal').modal('hide');
                     window.location.href = '/home/';
                 },
                 error: function (xhr, textStatus, errorThrown) {
