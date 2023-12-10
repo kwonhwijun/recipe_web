@@ -28,7 +28,6 @@ urlpatterns = [
     path('login/', account.views.login, name='login'),
     path('signup_ajax/', account.views.signup_ajax, name='signup_ajax'),
     path('login_ajax/', account.views.login_ajax, name='login_ajax'),
-    # path('signup/', account.views.signup, name='signup'),
     path('logout/', account.views.logout, name='logout'),
     path('delete/', account.views.delete, name='delete'),
     path('profile/',account.views.profile, name='profile'),

@@ -130,23 +130,23 @@
             });
         });
         $("#chk_pass").click(function() {
-            var passwordField = $("#password");
-            var passwordType = passwordField.attr("type");
+            var toggle = $("#password");
+            var pwtoggle = toggle.attr("type");
         
-            passwordField.attr("type", passwordType === "password" ? "text" : "password");
+            toggle.attr("type", pwtoggle === "password" ? "text" : "password");
         });
         $("#sign_chk_pass").click(function() {
-            var passwordField = $("#sign_password");
-            var passwordType = passwordField.attr("type");
+            var toggle = $("#sign_password");
+            var pwtoggle = toggle.attr("type");
 
-            passwordField.attr("type", passwordType === "password" ? "text" : "password");
+            toggle.attr("type", pwtoggle === "password" ? "text" : "password");
         });
 
         $("#sign_chk_conf").click(function() {
-            var confirmField = $("#sign_confirm");
-            var confirmType = confirmField.attr("type");
+            var toggle = $("#sign_confirm");
+            var pwtoggle = toggle.attr("type");
 
-            confirmField.attr("type", confirmType === "password" ? "text" : "password");
+            toggle.attr("type", pwtoggle === "password" ? "text" : "password");
         });
     });
 </script>
