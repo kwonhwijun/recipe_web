@@ -23,6 +23,8 @@ urlpatterns = [
     path('polls/', include('polls.urls')),
     path('home/', polls.views.home, name='home'),
     path('input/', polls.views.input, name='input'),
+    path('result/', polls.views.input_result, name = 'input_result'),
+    path('input_ajax/', polls.views.input_ajax, name='input_ajax'),
     path('login/', account.views.login, name='login'),
     path('signup_ajax/', account.views.signup_ajax, name='signup_ajax'),
     path('login_ajax/', account.views.login_ajax, name='login_ajax'),

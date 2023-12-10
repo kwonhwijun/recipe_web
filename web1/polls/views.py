@@ -1,12 +1,7 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.template import loader
-from django.http import Http404
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login as auth_login
+from django.http import HttpResponse
 from django.http import JsonResponse
-from .models import Question
 import oracledb as od
 
 def index(request):
@@ -59,3 +54,21 @@ def home(request):
 
 def input(request):
     return render(request, 'polls/input.html')
+
+@csrf_exempt
+def input_ajax(request):
+    if request.method == 'POST':
+        disease = request.POST.get('disease', '')
+        pill = request.POST.get('pill', '')
+        response_data = {
+            'disease': disease,
+            'pill': pill,
+        }
+    return JsonResponse(response_data)
+
+def input_result(request):
+    disease = request.POST.get('disease','')
+    pill = request.POST.get('pill','')
+    return render(request, 'polls/input_result.html', {'disease': disease, 'pill': pill})
+
+
