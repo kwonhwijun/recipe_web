@@ -84,9 +84,7 @@
           </div>
         </div>
       </div>
-
-    
-    <script>
+<script>
     $(document).ready(function () {
         $("#signup-form").submit(function (e) {
             e.preventDefault();
@@ -131,7 +129,26 @@
                 }
             });
         });
+        $("#chk_pass").click(function() {
+            var passwordField = $("#password");
+            var passwordType = passwordField.attr("type");
+        
+            passwordField.attr("type", passwordType === "password" ? "text" : "password");
+        });
+        $("#sign_chk_pass").click(function() {
+            var passwordField = $("#sign_password");
+            var passwordType = passwordField.attr("type");
+
+            passwordField.attr("type", passwordType === "password" ? "text" : "password");
+        });
+
+        $("#sign_chk_conf").click(function() {
+            var confirmField = $("#sign_confirm");
+            var confirmType = confirmField.attr("type");
+
+            confirmField.attr("type", confirmType === "password" ? "text" : "password");
+        });
     });
-    </script>
+</script>
 </body>
 </html>
