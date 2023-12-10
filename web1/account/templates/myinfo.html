@@ -9,21 +9,19 @@
     <link rel="stylesheet" href="{% static '/style1.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    
 </head>
 <body>
 <div class="container mt-5">
-    <div class="page-content page-container" id="page-content">
+    <div class="page-content page-container" id="page-content" style="width:90%;">
         <div class="padding">
-            <div class="row container d-flex justify-content-center">
-                <div class="col-xl-6 col-md-12">
+            <div>
+                <div>
                     <div class="card user-card-full">
                         <div class="row m-l-0 m-r-0">
                             <div class="col-sm-4 bg-c-lite-green user-profile">
-                                <div class="card-block text-center text-white">
+                                <div class="card-block text-center text-white" style="padding-top: 50px;">
                                     <div class="m-b-25">
-                                        <img src="" class="img-radius" alt="User-Profile-Image">
+                                        <img src="{% static '/user.png' %}" class="img-radius" alt="User-Profile-Image">
                                     </div>
                                         <h6 class="f-w-600">{{ user.username }}</h6>
                                         <p></p>
