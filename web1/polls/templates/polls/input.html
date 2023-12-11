@@ -7,12 +7,14 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
         .border-div{
-            border: 1px solid #9eecf1; /* 1픽셀 두께의 검은색 실선 태두리 */
-            padding: 10px; /* 내부 여백 추가 (선택적) */
+            border: 1px solid #9eecf1;
+            padding: 10px;
         }
+
     </style>
 </head>
 <body>
+<div class="paading-div" style="padding: 10%; margin-bottom: 200px;">
     <div class="container mt-5">
         <br>
         <div class="border-div">
@@ -46,10 +48,26 @@
             <!--여기에 입력한값 출력-->
         </div>
         <h3>둘 중 하나 선택해서 사용예정</h3>
+        <div class="border-div">
+        <h5>자동완성 기능 test(약이름)</h5>
+        <form id="searchForm" action="/result_page/" method="POST" target="_blank">
+            <input class = "form-control me-2" name="search_pill" type="search" list="pill_list" placeholder="약이름">
+                <datalist id="pill_list">
+                    {% for pill_name in pill_list %}
+                        <option>{{pill_name}}</option>
+                    {% endfor %}
+                </datalist>
+            <button class="btn btn-primary" type="submit">전송</button>
+            </form>
+        <div id="select-option">
+            <!-- 결과값 출력 -->
+        </div>
+        </div>
     </div>
-</body>
+</div>
 <script>
     $(document).ready(function () {
+        // ajax 테스트용 
         $("#input-value").click(function () {
             input_ajax();
         });
@@ -73,6 +91,47 @@
                 }
             });
         }
+
+        // db에서 불러온 약이름 option태그로 추가시키기
+        var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+
+        $('input[name="search_pill"]').on('input', function() {
+            var input_value = $(this).val();
+            $.ajax({
+                url: '/auto_complete/',
+                method: 'POST',
+                data: {'input_value': input_value,
+                'csrfmiddlewaretoken': csrf_token},
+                dataType: 'json',
+                success: function(data) {
+                    var datalist = $('#pill_list');
+
+                    datalist.empty();
+                    $.each(data, function(index, value) {
+                        datalist.append('<option value="' + value + '">' + value + '</option>');
+                    });
+                }
+            });
+        });
+
+        // option에서 누른 약 이름데이터 ajax로 보내기
+        $('#searchForm').submit(function (e) {
+            e.preventDefault();
+            var option = $('input[name="search_pill"]').val();
+            $.ajax({
+                url: '/select_pill/',
+                method: 'POST',
+                data: {
+                    'selected_option': option,
+                    'csrfmiddlewaretoken': csrf_token
+                },
+                dataType: 'json',
+                success: function (result) {
+                    $("#select-option").html('<h5>ajax 전송결과</h5><div>' + result.result + '</div>');
+                }
+            });
+        });
     });
 </script>
+</body>
 </html>

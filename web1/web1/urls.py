@@ -32,4 +32,6 @@ urlpatterns = [
     path('delete/', account.views.delete, name='delete'),
     path('profile/',account.views.profile, name='profile'),
     path('edit_profile/', account.views.edit_profile, name='edit_profile'),
+    path('auto_complete/', polls.views.auto_complete, name='auto_complete'),
+    path('select_pill/', polls.views.select_pill, name='select_pill'),
 ]
