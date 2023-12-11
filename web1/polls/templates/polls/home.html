@@ -20,11 +20,8 @@
                     <i class="fas fa-bars ms-1"></i> 
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                        <li class="nav-item"></li>
-                        <li class="nav-item"></li>
-                        <li class="nav-item"></li>                        
-						{% if user.is_authenticated %}
+                    <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">                     
+                        {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="javascript:{document.getElementById('logout').submit()}">로그아웃</a>
                             <form id="logout" method="POST" action="{% url 'logout' %}">
@@ -39,7 +36,7 @@
                             <a class="nav-link" href="{% url 'login' %}">로그인</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'signup' %}">회원가입</a>
+                            <a class="nav-link" href="{% url 'login' %}">회원가입</a>
                         </li>
                         {% endif %}                        
                     </ul>
