@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
-        .bordered-div{
+        .border-div{
             border: 1px solid #9eecf1; /* 1픽셀 두께의 검은색 실선 태두리 */
             padding: 10px; /* 내부 여백 추가 (선택적) */
         }
@@ -15,7 +15,7 @@
 <body>
     <div class="container mt-5">
         <br>
-        <div class="bordered-div">
+        <div class="border-div">
         <h5>form태그로 데이터 보내기-동기방식(페이지 이동o. 다른 페이지)</h5>
         <form action="{% url 'input_result' %}" method="POST">
             {% csrf_token %}
@@ -30,7 +30,7 @@
             <button type="submit" class="btn btn-primary">제출</button>
         </form>
         </div>
-        <div class="bordered-div">
+        <div class="border-div">
         <h5>ajax로 데이터 보내기-비동기 방식(페이지 이동x. 이동하게 수정 가능)</h5>
             <div class="mb-3">
                 <label for="disease" class="form-label">질병명:</label>
