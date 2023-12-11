@@ -23,8 +23,10 @@ urlpatterns = [
     path('polls/', include('polls.urls')),
     path('home/', polls.views.home, name='home'),
     path('input/', polls.views.input, name='input'),
-    path('generic/', polls.views.generic, name='generic'),
     path('login/', account.views.login, name='login'),
     path('signup/', account.views.signup, name='signup'),
     path('logout/', account.views.logout, name='logout'),
+    path('delete/', account.views.delete, name='delete'),
+    path('profile/',account.views.profile, name='profile'),
+    path('edit_profile/', account.views.edit_profile, name='edit_profile'),
 ]
