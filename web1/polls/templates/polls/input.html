@@ -33,11 +33,11 @@
                 <form action="{% url 'input_result' %}" method="POST">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="disease" class="form-label">질병명:</label>
+                        <label for="diseaseForm" class="form-label">질병명:</label>
                         <input type="text" class="form-control" id="diseaseForm" name="disease">
                     </div>
                     <div class="mb-3">
-                        <label for="pill" class="form-label">복용중인 약:</label>
+                        <label for="pillForm" class="form-label">복용중인 약:</label>
                         <input type="text" class="form-control" id="pillForm" name="pill">
                     </div>
                     <button type="submit" class="btn btn-primary">제출</button>
@@ -46,11 +46,11 @@
                 <div class="border-div">
                 <h5>ajax로 데이터 보내기-비동기 방식(페이지 이동x. 이동하게 수정 가능)</h5>
                     <div class="mb-3">
-                        <label for="disease" class="form-label">질병명:</label>
+                        <label for="diseaseAjax" class="form-label">질병명:</label>
                         <input type="text" class="form-control" id="diseaseAjax" name="disease">
                     </div>
                     <div class="mb-3">
-                        <label for="pill" class="form-label">복용중인 약:</label>
+                        <label for="pillAjax" class="form-label">복용중인 약:</label>
                         <input type="text" class="form-control" id="pillAjax" name="pill">
                     </div>
                     <button id="input-value" class="btn btn-primary">검색</button>
@@ -58,7 +58,7 @@
                 <div id="result">
                     <!--여기에 입력한값 출력-->
                 </div>
-                <div class="border-div">
+                <div class="border-div" style="padding-bottom: 300px;">
                 <h5>자동완성 기능 test(약이름)</h5>
                 <form id="searchForm" action="/result_page/" method="POST" target="_blank">
                     <input class = "form-control me-2" name="search_pill" type="search" list="pill_list" placeholder="약이름">
@@ -72,6 +72,17 @@
                 <div id="select-option">
                     <!-- 결과값 출력 -->
                 </div>
+                </div>
+                <!-- 레시피명 입력 -->
+                <div class="border-div">
+                <form action="{% url 'input_recipe' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="recipe" class="form-label">레시피명: </label>
+                        <input type="text" class="form-control" id="recipe" name="recipe">
+                    </div>
+                    <button type="submit" class="btn btn-primary">제출</button>
+                </form>
                 </div>
             </div>
         </div>
@@ -134,7 +145,7 @@
                 dataType: 'json',
                 success: function(data) {
                     var datalist = $('#pill_list');
-
+                    
                     datalist.empty();
                     $.each(data, function(index, value) {
                         datalist.append('<option value="' + value + '">' + value + '</option>');

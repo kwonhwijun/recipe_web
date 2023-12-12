@@ -57,6 +57,7 @@
                             </div>
                         </div>
                     </div>
+                    {% csrf_token %}
                     <div id="modal" class="modal" tabindex="-1" role="dialog">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -106,7 +107,6 @@
                     'csrfmiddlewaretoken': '{{ csrf_token }}'
                 },
                 success: function (data) {
-                    // 응답이 성공적으로 완료되면 모달을 닫고 리다이렉트
                     $('#modal').modal('hide');
                     window.location.href = '/home/';
                 },

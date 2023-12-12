@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Page</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    {% if recipe %}
+    <h1>분류</h1>
+    <div class="div-result">
+        <div id="result-test">
+            {{recipe}}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if tests %}
+    <ul>
+        {% for test in tests %}
+            <li>
+                <button id="button_{{ test.recipe.0 }}">
+                    {{ test.recipe.0 }}
+                </button>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div id="result-div">
+    </div>
+
+<script>
+    $(document).ready(function() {
+        $("button[id^='button_']").on("click", function() {
+            var btnvalue = $(this).text();
+            var recvalue = $("#result-test").text(); 
+
+            $.ajax({
+                type: 'POST',
+                url: '/recipe_ajax/',
+                data: { btnvalue: btnvalue, recvalue: recvalue },
+                success: function(data) {                
+                    var result = $("#result-div");
+                    result.empty();
+                
+                    for (var i = 0; i < data.results.length; i++) {
+                        var results = data.results[i];                    
+                        result.append(`<p>${results.RECIPE_TITLE} - <a href="${results.RECIPE_URL}" target="_blank">${results.RECIPE_URL}</a></p>`);
+                    }
+                },
+                error: function(error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
