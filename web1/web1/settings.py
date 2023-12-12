@@ -121,7 +121,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'polls/static'),
+    os.path.join(BASE_DIR, 'account/static'),
 ]
 
 
@@ -134,3 +135,5 @@ SESSION_COOKIE_AGE = 1800
 SESSION_SAVE_EVERY_REQUEST = True
 # home으로 redirect
 LOGIN_URL = '/home/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -4,17 +4,10 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 import oracledb as od
 
-def connection(query):
+def connection():
     od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
     conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
-    cursor = conn.cursor()
-    cursor.execute(query)
-    data = cursor.fetchall()
-    conn.close()
-    return data
-
-
-
+    return conn
 
 def index(request):
     return render(request, 'polls/index.html')
@@ -87,9 +80,7 @@ def input_result(request):
 def auto_complete(request):
     if request.method == 'POST':
         input_value = request.POST.get('input_value')
-        
-        od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
-        conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
+        conn = connection()
         query = (
             "SELECT dname FROM med_test "
             "WHERE UPPER(dname) LIKE UPPER(:input_value)||'%' "
