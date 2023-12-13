@@ -36,5 +36,6 @@ urlpatterns = [
     path('auto_complete/', polls.views.auto_complete, name='auto_complete'),
     path('select_pill/', polls.views.select_pill, name='select_pill'),
     path('recipe/', polls.views.input_recipe, name = 'input_recipe'),
-    path('recipe_ajax/', polls.views.recipe_ajax, name='recipe_ajax')
+    path('recipe_ajax/', polls.views.recipe_ajax, name='recipe_ajax'),
+    path('load_ajax/', polls.views.load_ajax, name='load_ajax')
 ]

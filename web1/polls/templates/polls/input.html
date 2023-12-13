@@ -58,6 +58,10 @@
                 <div id="result">
                     <!--여기에 입력한값 출력-->
                 </div>
+                <div id="user-result">
+                    <!--여기에 입력한값 출력-->
+                </div>
+
                 <div class="border-div" style="padding-bottom: 300px;">
                 <h5>자동완성 기능 test(약이름)</h5>
                 <form id="searchForm" action="/result_page/" method="POST" target="_blank">
@@ -107,21 +111,49 @@
         <script src="/static/js/scripts.js"></script>
 <script>
     $(document).ready(function () {
-        // ajax 테스트용 
+        var userId = "{{ request.user.id }}";
+        load_ajax();
+
+        function load_ajax(){
+            var user_id = userId;
+            $.ajax({
+                type:"POST",
+                url: '/load_ajax/',
+                data: {
+                    user_id: user_id
+                },
+                success: function (response) {
+                    var rsdisease = "";
+                    var rspill ="";
+                    for (var i = 0; i < response.results.length; i++) {
+                        rsdisease +=  response.results[i].disease + ", "
+                        rspill += response.results[i].pill + ", "
+                    }
+                    $("#user-result").html("<p>질병명: " + rsdisease + "</p>" + "<p>복용중인 약: " + rspill + "</p>" );
+                },
+                error: function (error) {
+                    console.log("에러 발생:", error);
+                }
+
+            })
+
+        }
+
         $("#input-value").click(function () {
             input_ajax();
         });
-
+        // ajax 테스트용 
         function input_ajax() {
             var disease = $("#diseaseAjax").val();
             var pill = $("#pillAjax").val();
-
+            var user_id = userId;
             $.ajax({
                 type: "POST",
                 url: '{% url "input_ajax" %}',
                 data: {
                     disease: disease,
                     pill: pill,
+                    user_id: user_id
                 },
                 success: function (response) {
                     $("#result").html("<p>질병명: " + response.disease + "</p><p>복용중인 약: " + response.pill + "</p>");

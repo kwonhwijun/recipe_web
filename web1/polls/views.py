@@ -67,11 +67,48 @@ def input_ajax(request):
     if request.method == 'POST':
         disease = request.POST.get('disease', '')
         pill = request.POST.get('pill', '')
+        user_id = request.POST.get('user_id', '')
+        
+        query = f'insert into user_input values (\'{user_id}\', \'{disease}\', \'{pill}\')'  
+              
+        od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
+        conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
+        exe = conn.cursor()
+        exe.execute(query)   
+        conn.commit()
+        exe.close()        
+        
         response_data = {
             'disease': disease,
             'pill': pill,
         }
     return JsonResponse(response_data)
+
+
+# /input - 페이지 로딩되었을때 입력했던 질병, 약정보 출력하는 ajax
+@csrf_exempt
+def load_ajax(request):
+    user_id = request.POST.get('user_id', '')
+    print('아이디값', user_id)
+    query = f'''
+            SELECT disease, pill
+            FROM user_input
+            WHERE userid = \'{user_id}\'
+            ''' 
+    exe = connection().cursor()
+    exe.execute(query)
+    datas = exe.fetchall()
+    result = []
+    for data in datas:
+        row = {
+            'disease': data[0],
+            'pill': data[1]
+        }
+        result.append(row)
+
+    return JsonResponse({'results': result})
+    
+
 
 # /input - form태그 test
 def input_result(request):
