@@ -37,5 +37,7 @@ urlpatterns = [
     path('select_pill/', polls.views.select_pill, name='select_pill'),
     path('recipe/', polls.views.input_recipe, name = 'input_recipe'),
     path('recipe_ajax/', polls.views.recipe_ajax, name='recipe_ajax'),
-    path('load_ajax/', polls.views.load_ajax, name='load_ajax')
+    path('load_ajax/', polls.views.load_ajax, name='load_ajax'),
+    path('testpage/', polls.views.testpage, name='testpage'),
+    path('output/', polls.views.output_test, name='output_test'),
 ]

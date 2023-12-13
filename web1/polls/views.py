@@ -4,6 +4,17 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 import oracledb as od
 
+from . import recipe
+from . import db
+from . import svd
+
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.manifold import TSNE
+from sklearn.metrics.pairwise import cosine_similarity
+
+
+
 # db connection
 def connection():
     od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
@@ -89,7 +100,6 @@ def input_ajax(request):
 @csrf_exempt
 def load_ajax(request):
     user_id = request.POST.get('user_id', '')
-    print('아이디값', user_id)
     query = f'''
             SELECT disease, pill
             FROM user_input
@@ -183,4 +193,37 @@ def recipe_ajax(request):
 
         return JsonResponse({'results': result})
 
+
+def testpage(request):
+    return render(request, 'polls/testpage.html')
+
+
+# 유사도 5개출력 테스트
+def output_test(request):
+     
+    recipe_title = int(request.POST.get('recipe_title',''))
+    matrix = pd.read_csv(r'polls/test_matrix.csv')
+    title, rec_vec, ingre_vec = svd.matrix_decomposition(matrix.iloc[:, 1:])
+    print(recipe_title)
+
+    def draw_TSNE(rec_vec, n = 0):
+        # recipe_vec 간의 유사도 구하기
+        sim_recipe = cosine_similarity(rec_vec , rec_vec)
+        # TSNE로 차원 축소하기
+        tsne = TSNE(n_components= 2)
+        reduced_vec = tsne.fit_transform(rec_vec)
+        def find_5idx(title, similarity, row_num = 0):
+            similarity_pd = pd.DataFrame(similarity, columns=title)
+            sim_list = similarity_pd.loc[row_num].sort_values(ascending= False)[1:6]
+            idx = []
+            for sim_title in list(sim_list.index) :
+                idx.extend(list(title.index[title == sim_title]))
+            return idx
+        output = []
+        for i in find_5idx(title, sim_recipe, n):
+            output.append(title[i])
+        return output
+    output = draw_TSNE(rec_vec, recipe_title)
     
+    return render(request, 'polls/output.html', {'output': output})
+

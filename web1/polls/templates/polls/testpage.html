@@ -1,0 +1,6 @@
+<form action="{% url 'output_test' %}" method="POST">
+    {% csrf_token %}
+    <label for="index">인덱스 번호:</label>
+    <input type="text" id="index" name="recipe_title">
+    <button type="submit">제출</button>
+</form>
