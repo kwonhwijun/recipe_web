@@ -27,9 +27,9 @@
         {% endfor %}
     </ul>
     {% endif %}
-
-    <div id="result-div">
-    </div>
+<div id="result-div">
+    <!-- 레시피명, 이미지 추가-->
+</div>
 
 <script>
     $(document).ready(function() {
@@ -41,13 +41,16 @@
                 type: 'POST',
                 url: '/recipe_ajax/',
                 data: { btnvalue: btnvalue, recvalue: recvalue },
-                success: function(data) {                
-                    var result = $("#result-div");
-                    result.empty();
-                
-                    for (var i = 0; i < data.results.length; i++) {
-                        var results = data.results[i];                    
-                        result.append(`<p>${results.RECIPE_TITLE} - <a href="${results.RECIPE_URL}" target="_blank">${results.RECIPE_URL}</a></p>`);
+                success: function(response) {
+                    var resultDiv = $("#result-div");
+                    resultDiv.empty();
+    
+                    for (var i = 0; i < response.image_urls.length; i++) {
+                        var imageUrl = response.image_urls[i].image_url;
+                        var recipeTitle = response.image_urls[i].recipe;
+    
+                        resultDiv.append(`<p>${recipeTitle}</p>`);
+                        resultDiv.append(`<img src="${imageUrl}" alt="${recipeTitle}" width="200" height="200">`);
                     }
                 },
                 error: function(error) {

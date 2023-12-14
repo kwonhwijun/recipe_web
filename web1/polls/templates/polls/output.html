@@ -1,5 +1,15 @@
 <div>
-    {% for item in output %}
+    <h3>식재료 제거 전 레시피 추천</h3>
+    {% for item in output.0 %}
+        <div>
+            {{ item }}
+        </div>
+    {% endfor %}
+</div>
+
+<div>
+    <h3>식재료 제거 후 레시피 추천</h3>
+    {% for item in output.1 %}
         <div>
             {{ item }}
         </div>

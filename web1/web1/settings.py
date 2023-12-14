@@ -131,8 +131,8 @@ TIME_ZONE = 'Asia/Seoul'
 
 # 세션 타임(움직임 없으면(페이지 이동)30분 후 세션만료)
 SESSION_COOKIE_AGE = 1800
-
 SESSION_SAVE_EVERY_REQUEST = True
+
 # home으로 redirect
 LOGIN_URL = '/home/'
 
