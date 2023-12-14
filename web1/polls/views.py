@@ -173,9 +173,9 @@ def input_recipe(request):
     
     return render(request, 'polls/recipe.html', {'tests': tests, 'recipe': recipe})
 
-# /input - 자동완성 ajax
+# /input - 약이름 자동완성 ajax
 @csrf_exempt
-def auto_complete(request):
+def auto_complete_pill(request):
     if request.method == 'POST':        
         input_value = request.POST.get('input_value')
         
@@ -185,6 +185,26 @@ def auto_complete(request):
         query = (
             "SELECT dname FROM med_test "
             "WHERE UPPER(dname) LIKE UPPER(:input_value)||'%' "
+                )
+        with conn.cursor() as cursor:
+            cursor.execute(query, input_value=f'%{input_value}%')
+            datas = [row[0] for row in cursor.fetchmany(30)] # 30개만 출력
+
+        return JsonResponse(datas, safe=False)
+    
+    
+# /input - 질병명 자동완성 ajax
+@csrf_exempt
+def auto_complete_disease(request):
+    if request.method == 'POST':        
+        input_value = request.POST.get('input_value')
+        
+        od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
+        conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
+        
+        query = (
+            "SELECT 질병명 FROM disease_table "
+            "WHERE UPPER(질병명) LIKE UPPER(:input_value)||'%' "
                 )
         with conn.cursor() as cursor:
             cursor.execute(query, input_value=f'%{input_value}%')

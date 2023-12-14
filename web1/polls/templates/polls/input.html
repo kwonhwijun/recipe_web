@@ -33,7 +33,12 @@
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="diseaseForm" class="form-label">질병명:</label>
-                        <input type="text" class="form-control" id="diseaseForm" name="disease" placeholder="질병 이름">
+                        <input id = "diseaseForm" class="form-control" name='disease' type="text" list="disease_list" placeholder="질병 이름">
+                        <datalist id="disease_list">
+                            {% for disease_name in disease_list %}
+                                <option>{{disease_name}}</option>
+                            {% endfor %}
+                        </datalist>
                     </div>
                     <div class="mb-3">
                         <label for="pillForm" class="form-label">복용중인 약:</label>
@@ -139,7 +144,7 @@
             var disease = $(this).data("disease");
             var pill = $(this).data("pill");
             var user_id = userId;
-            
+
             disease = disease !== null ? disease : 'null';
             pill = pill !== null ? pill : 'null';
 
@@ -193,19 +198,40 @@
             });
         }
 
-        // 자동완성. db에서 불러온 약이름 option태그로 추가시키기
+        // 약이름 자동완성. db에서 불러온 약이름 option태그로 추가시키기
         var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
 
         $('input[name="pill"]').on('input', function() {
             var input_value = $(this).val();
             $.ajax({
-                url: '/auto_complete/',
+                url: '/auto_complete_pill/',
                 method: 'POST',
                 data: {'input_value': input_value,
                 'csrfmiddlewaretoken': csrf_token},
                 dataType: 'json',
                 success: function(data) {
                     var datalist = $('#pill_list');
+                    
+                    datalist.empty();
+                    $.each(data, function(index, value) {
+                        datalist.append('<option value="' + value + '">' + value + '</option>');
+                    });
+                }
+            });
+        });
+
+        // 질병명 자동완성
+        var csrf_token = $('[name="csrfmiddlewaretoken"]').val();
+        $('input[name="disease"]').on('input', function() {
+            var input_value = $(this).val();
+            $.ajax({
+                url: '/auto_complete_disease/',
+                method: 'POST',
+                data: {'input_value': input_value,
+                'csrfmiddlewaretoken': csrf_token},
+                dataType: 'json',
+                success: function(data) {
+                    var datalist = $('#disease_list');
                     
                     datalist.empty();
                     $.each(data, function(index, value) {
