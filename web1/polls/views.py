@@ -258,7 +258,7 @@ def testpage(request):
 
 # /testpage > /output - 인덱스 입력, 식재료 제거 전 후 5개씩 출력
 def output_test(request):
-    matrix = pd.read_csv(r'polls/food_matrix_2001.csv')
+    matrix = pd.read_csv(r'polls/data/food_matrix_2001.csv')
     matrix = matrix.loc[matrix.recipe_title.notna()].copy() 
     matrix.index = range(len(matrix)) 
     
@@ -267,7 +267,6 @@ def output_test(request):
 
     def draw_recipe_recommend(matrix, rec_num, ingd_name):
         rec_title, ingd_list, rec_vec, ingd_vec = svd.matrix_decomposition(matrix)
-        print(rec_title, ingd_list, rec_vec, ingd_vec)
 
         ingd_idx = ingd_list.index(ingd_name) # 삼겹살 -> 삼겹살의 index
         target_inge = ingd_vec[ingd_idx] # 삼결살의 100차원 벡터
@@ -296,7 +295,7 @@ def output_test(request):
 # def output_test(request):
      
 #     recipe_title = int(request.POST.get('recipe_title',''))
-#     matrix = pd.read_csv(r'polls/test_matrix.csv')
+#     matrix = pd.read_csv(r'polls/data/test_matrix.csv')
 #     title, rec_vec, ingre_vec = svd.matrix_decomposition(matrix.iloc[:, 1:])
 #     print(recipe_title)
 
