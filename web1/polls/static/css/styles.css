@@ -10876,8 +10876,6 @@ p {
 }
 
 #mainNav {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
   background-color: #212529;
 }
 #mainNav .navbar-toggler {
@@ -10944,7 +10942,7 @@ p {
 }
 header.masthead {
   position: relative;
-  padding-top: 10.5rem;
+  padding-top: 9rem;
   padding-bottom: 6rem;
   text-align: center;
   color: #fff;
@@ -10993,8 +10991,8 @@ header.masthead .btn-primary{
 
 @media (min-width: 768px) {
   header.masthead {
-    padding-top: 17rem;
-    padding-bottom: 12.5rem;
+    padding-top: 13rem;
+    padding-bottom: 9rem;
   }
   header.masthead .masthead-subheading {
     font-size: 2.25rem;
