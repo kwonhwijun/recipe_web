@@ -40,4 +40,5 @@ urlpatterns = [
     path('load_ajax/', polls.views.load_ajax, name='load_ajax'),
     path('testpage/', polls.views.testpage, name='testpage'),
     path('output/', polls.views.output_test, name='output_test'),
+    path('delete_info/', polls.views.delete_info, name='delete_info'),
 ]

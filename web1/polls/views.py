@@ -117,6 +117,47 @@ def load_ajax(request):
         result.append(row)
 
     return JsonResponse({'results': result})
+
+
+@csrf_exempt
+def delete_info(request):
+    user_id = request.POST.get('user_id', '')
+    disease = request.POST.get('disease', '')
+    pill = request.POST.get('pill','')
+    
+    if disease == 'null':
+        query = f'''
+                delete from user_input
+                where userid =  \'{user_id}\' and disease is null and pill = \'{pill}\'
+                '''
+    elif pill == 'null':
+        query = f'''
+                delete from user_input
+                where userid =  \'{user_id}\' and disease=\'{disease}\' and pill is null
+                '''
+    
+    else:
+        query = f'''
+                delete from user_input
+                where userid =  \'{user_id}\' and disease=\'{disease}\' and pill = \'{pill}\'
+                '''
+            
+    od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
+    conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
+    exe = conn.cursor()
+    exe.execute(query)
+    conn.commit()
+    exe.close()
+    
+    response_data = {
+            'user_id' : user_id,
+            'disease': disease,
+            'pill': pill,
+        }
+    return JsonResponse(response_data)
+
+    
+    
     
 
 
