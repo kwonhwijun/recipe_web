@@ -24,5 +24,20 @@
     <header class="masthead">
         <div class="masthead-heading text-uppercase">레시피 상세정보</div>
     </header>
+<script>
+    $(document).ready(function() {
+        const loading_page = $("#load");
+        $(document).ajaxStart(function() {
+            loading_page.show();
+        });
+        $(document).ajaxStop(function() {
+            loading_page.hide();
+        });
+
+        $(window).on("load", function() {
+            loading_page.hide();
+        });
+    });
+</script>
 </body>
 </html>

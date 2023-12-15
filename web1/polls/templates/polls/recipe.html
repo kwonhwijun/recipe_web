@@ -67,9 +67,9 @@
             loading_page.hide();
         });
           // 모든 리소스가 로드된 후에 실행
-          $(window).on("load", function() {
+        $(window).on("load", function() {
             loading_page.hide(); // 로딩이 완료되면 loading.html을 숨김
-          });
+        });
 
         // 해당 버튼 누르면 전 페이지에서 입력한 값과 버튼 value값을 ajax로 보냄
         $("button[id^='button_']").on("click", function() {
