@@ -76,3 +76,19 @@ def close():
     conn = od.connect(user = config.DB_CONFIG['user'], password = config.DB_CONFIG['password'], dsn = config.DB_CONFIG['dsn'])
     conn.close()
 close()
+
+# query문 직접 작성해서 select 할때 사용
+def select_table(query):
+    od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12") # db connection
+    conn = od.connect(user = config.DB_CONFIG['user'], password = config.DB_CONFIG['password'],  dsn = config.DB_CONFIG['dsn'])
+    exe = conn.cursor()
+    exe.execute(query)
+    row = exe.fetchall() # row 불러오기
+    column_name = exe.description # column 불러오기
+    columns=[]
+    for i in column_name:
+        columns.append(i[0])
+    result = pd.DataFrame(row, columns=columns) # row, column을 pandas DataFrame으로 나타내기
+    result.rename(mapper=str.lower, axis='columns', inplace=True)
+    conn.close()
+    return result

@@ -22,22 +22,6 @@ def load_recipe(n=100):
     conn.close() #실험 # 수정
     return result
 
-# query문 직접 작성해서 select 할때 사용
-def select_table(query):
-    od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12") # db connection
-    conn = od.connect(user = config.DB_CONFIG['user'], password = config.DB_CONFIG['password'],  dsn = config.DB_CONFIG['dsn'])
-    exe = conn.cursor()
-    exe.execute(query)
-    row = exe.fetchall() # row 불러오기
-    column_name = exe.description # column 불러오기
-    columns=[]
-    for i in column_name:
-        columns.append(i[0])
-    result = pd.DataFrame(row, columns=columns) # row, column을 pandas DataFrame으로 나타내기
-    result.rename(mapper=str.lower, axis='columns', inplace=True)
-    conn.close()
-    return result
-
 def recipe_preprocessing(raw):
     data = raw.loc[raw['recipe_ingredients'].notnull()].copy()  # None 값 제거
     def clean_ingredients(ingredients):
@@ -190,9 +174,7 @@ def parse_single_unit(unit):
 
 # 4. Matrix 변환
 def recipe_food_matrix(data):
-    data.index = range(len(data)) # index 초기화
-
-    # all_ingredients: 모든 식재료 리스트
+    data.index = range(len(data)) # index 초기
 
     ingredient_columns = data.filter(like='ingredient')
     if 'recipe_ingredients' in ingredient_columns.columns:
