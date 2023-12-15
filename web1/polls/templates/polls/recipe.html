@@ -9,7 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-    <link href="/static/css/styles.css?v=1" rel="stylesheet" />
+    <link href="/static/css/styles1.css" rel="stylesheet"/>
 <style>
     .div-in-result{
         border: 1px solid #9eecf1;
@@ -50,6 +50,11 @@
 </div>
 
 <script>
+    var loading = false;
+    var page = 1;  // 초기 페이지 번호
+    var reachedEnd = false;
+    var btnvalue;
+    var recvalue;
 
     $(document).ready(function() {
         const loading_page = $("#load");
@@ -64,10 +69,10 @@
             loading_page.hide(); // 로딩이 완료되면 loading.html을 숨김
           });
 
-        window.scrollTo({left:0, top:500, behavior: "smooth"})
+        // 해당 버튼 누르면 전 페이지에서 입력한 값과 버튼 value값을 ajax로 보냄
         $("button[id^='button_']").on("click", function() {
-            var btnvalue = $(this).text();
-            var recvalue = $("#result-test").text(); 
+            btnvalue = $(this).text();
+            recvalue = $("#result-test").text(); 
 
             $.ajax({
                 type: 'POST',
@@ -89,6 +94,40 @@
                     console.error(error);
                 }
             });
+        });
+
+        $(window).scroll(function () {
+            if (!reachedEnd && $(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
+                if (!loading) {
+                    loading = true;
+                    page++;
+                    $.ajax({
+                        type: 'POST',
+                        url: '/recipe_ajax/',
+                        data: { btnvalue: btnvalue, recvalue: recvalue, page: page },
+                        success: function (response) {
+                            var resultDiv = $("#result-div");
+        
+                            if (response.image_urls.length > 0) {
+                                for (var i = 0; i < response.image_urls.length; i++) {
+                                    var imageUrl = response.image_urls[i].image_url;
+                                    var recipeTitle = response.image_urls[i].recipe;
+        
+                                    resultDiv.append(`<p>${recipeTitle}</p>`);
+                                    resultDiv.append(`<img src="${imageUrl}" alt="${recipeTitle}" width="200" height="200">`);
+                                }
+                            } else {
+                                reachedEnd = true;
+                            }
+                            loading = false;
+                        },
+                        error: function (error) {
+                            console.error(error);
+                            loading = false;
+                        }
+                    });
+                }
+            }
         });
     });
 </script>

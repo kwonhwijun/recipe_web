@@ -5,6 +5,7 @@ from django.http import JsonResponse
 import oracledb as od
 import requests
 from bs4 import BeautifulSoup
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from . import recipe
 from . import db
@@ -218,26 +219,29 @@ def recipe_ajax(request):
     if request.method == 'POST':
         recvalue = request.POST.get('recvalue', '').strip() #공백제거
         btnvalue = request.POST.get('btnvalue', '').strip()
-        # query = f'''
-        #           SELECT recipe_title, recipe_url
-        #           FROM final_recipe
-        #           WHERE recipe_title LIKE \'%{recvalue}%\' AND RECIPE_CATEGORY_TYPE = \'{btnvalue}\'
-        #           '''
+
+        page = int(request.POST.get('page', 1))
+
+        # 페이지당 아이템 수
+        items_per_page = 10
+
+        # 쿼리 조건에 페이징을 적용
         query = f'''
-                    SELECT recipe_title, recipe_url
-                    FROM (
-                        SELECT recipe_title, recipe_url, ROWNUM AS rnum
-                        FROM final_recipe
-                        WHERE recipe_title LIKE \'%{recvalue}%\' AND RECIPE_CATEGORY_TYPE = \'{btnvalue}\'
-                    )
-                    WHERE rnum <= 20
-                '''
+            SELECT recipe_title, recipe_url
+            FROM (
+                SELECT recipe_title, recipe_url, ROWNUM AS rnum
+                FROM final_recipe
+                WHERE recipe_title LIKE :recvalue AND RECIPE_CATEGORY_TYPE = :btnvalue
+            )
+            WHERE rnum > :start_row AND rnum <= :end_row
+        '''
+
         
         
         od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
         conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
         exe = conn.cursor()
-        exe.execute(query)
+        exe.execute(query, {'recvalue': f'%{recvalue}%', 'btnvalue': btnvalue, 'start_row': (page - 1) * items_per_page, 'end_row': page * items_per_page})
         datas = exe.fetchall()
         
         result = []
@@ -259,6 +263,8 @@ def recipe_ajax(request):
             if img_tag:
                 image_url = img_tag['src']
                 image_urls.append({'recipe': recipe.get('RECIPE_TITLE', ''), 'image_url': image_url})
+                
+        conn.close()
         return JsonResponse({'image_urls': image_urls})
 
     return JsonResponse({'error': 'Invalid request'})
