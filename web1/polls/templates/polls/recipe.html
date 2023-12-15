@@ -34,10 +34,10 @@
     {% endif %}
     <div>
     {% if tests %}
-    <ul>
+    <ul class="custom-ul">
         {% for test in tests %}
-            <li>
-                <button id="button_{{ test.recipe.0 }}">
+            <li class="custom-li">
+                <button id="button_{{ test.recipe.0 }}" class="btn blue small">
                     {{ test.recipe.0 }}
                 </button>
             </li>
@@ -46,9 +46,10 @@
     {% endif %}
 </div>
 <div id="result-div">
+    <div id='recipe-group'>
     <!-- 레시피명, 이미지 추가-->
+    </div>
 </div>
-
 <script>
     var loading = false;
     var page = 1;  // 초기 페이지 번호
@@ -72,7 +73,7 @@
         // 해당 버튼 누르면 전 페이지에서 입력한 값과 버튼 value값을 ajax로 보냄
         $("button[id^='button_']").on("click", function() {
             btnvalue = $(this).text();
-            recvalue = $("#result-test").text(); 
+            recvalue = $("#result-test").text();
 
             $.ajax({
                 type: 'POST',
@@ -81,13 +82,22 @@
                 success: function(response) {
                     var resultDiv = $("#result-div");
                     resultDiv.empty();
-    
+
                     for (var i = 0; i < response.image_urls.length; i++) {
                         var imageUrl = response.image_urls[i].image_url;
                         var recipeTitle = response.image_urls[i].recipe;
-    
-                        resultDiv.append(`<p>${recipeTitle}</p>`);
-                        resultDiv.append(`<img src="${imageUrl}" alt="${recipeTitle}" width="200" height="200">`);
+
+                        // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
+                        if (imageUrl && recipeTitle) {
+                            // 새로운 <div>를 생성하여 레시피 정보를 감싼다
+                            var recipeGroup = $("<div id='recipe-group'></div>");
+
+                            recipeGroup.append(`<p>${recipeTitle}</p>`);
+                            recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" width="200" height="200">`);
+
+                            // 최종적으로 resultDiv에 추가
+                            resultDiv.append(recipeGroup);
+                        }
                     }
                 },
                 error: function(error) {
@@ -113,8 +123,17 @@
                                     var imageUrl = response.image_urls[i].image_url;
                                     var recipeTitle = response.image_urls[i].recipe;
         
-                                    resultDiv.append(`<p>${recipeTitle}</p>`);
-                                    resultDiv.append(`<img src="${imageUrl}" alt="${recipeTitle}" width="200" height="200">`);
+                                    // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
+                                    if (imageUrl && recipeTitle) {
+                                        // 새로운 <div>를 생성하여 레시피 정보를 감싼다
+                                        var recipeGroup = $("<div id='recipe-group'></div>");
+
+                                        recipeGroup.append(`<p>${recipeTitle}</p>`);
+                                        recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" width="200" height="200">`);
+
+                                        // 최종적으로 resultDiv에 추가
+                                        resultDiv.append(recipeGroup);
+                                    }
                                 }
                             } else {
                                 reachedEnd = true;
