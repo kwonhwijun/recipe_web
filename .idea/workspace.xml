@@ -5,15 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dc7e6f7f-4e90-4acf-a892-898b4572c739" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/web1/polls/static/css/font/BMHANNA_11yrs_ttf.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web1/polls/static/css/font/TmonMonsori.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web1/polls/static/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/web1/polls/static/css/styles.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web1/polls/templates/polls/recipe.html" beforeDir="false" afterPath="$PROJECT_DIR$/web1/polls/templates/polls/recipe.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Jupyter Notebook" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
