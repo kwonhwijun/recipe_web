@@ -91,6 +91,7 @@
         <script src="/static/js/scripts.js"></script>
 <script>
     $(document).ready(function () {
+        window.scrollTo({left:0, top:500, behavior: "smooth"})
         var userId = "{{ request.user.id }}";
         if (userId && !isNaN(parseInt(userId, 10)) && parseInt(userId, 10) > 0) { //로그인 되어있을때만 load_ajax 실행
             load_ajax();

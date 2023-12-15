@@ -1,0 +1,30 @@
+<style>
+    #load {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        position: fixed;
+        display: flex; /* Flexbox를 사용하여 이미지와 텍스트를 세로 중앙 정렬 */
+        align-items: center; /* 세로 정렬 */
+        justify-content: center; /* 가로 정렬 */
+        opacity: 0.8;
+        background: white;
+        z-index: 99;
+        text-align: center;
+    }
+    
+    #load > img {
+        margin-right: 10px;
+        z-index: 100;
+    }
+
+    #load-text {
+        font-size: 16px;+
+    }
+</style>
+
+<div id="load">
+    <img src="/static/assets/img/loading.gif" alt="loading">
+    <div id="load-text">로딩하고 있음</div>
+</div>

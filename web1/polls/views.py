@@ -163,7 +163,7 @@ def input_recipe(request):
     recipe = request.POST.get('recipe','')
     
     # recipe페이지에서 버튼 생성할 value
-    query = f'select classification from tag_table group by CLASSIFICATION'
+    query = f'select recipe_category_type from final_recipe group by RECIPE_CATEGORY_TYPE'
     datas = connection(query)
 
     tests = []
@@ -218,11 +218,22 @@ def recipe_ajax(request):
     if request.method == 'POST':
         recvalue = request.POST.get('recvalue', '').strip() #공백제거
         btnvalue = request.POST.get('btnvalue', '').strip()
+        # query = f'''
+        #           SELECT recipe_title, recipe_url
+        #           FROM final_recipe
+        #           WHERE recipe_title LIKE \'%{recvalue}%\' AND RECIPE_CATEGORY_TYPE = \'{btnvalue}\'
+        #           '''
         query = f'''
-                  SELECT recipe_title, recipe_url
-                  FROM tag_table
-                  WHERE recipe_title LIKE \'%{recvalue}%\' AND CLASSIFICATION = \'{btnvalue}\'
-                  '''
+                    SELECT recipe_title, recipe_url
+                    FROM (
+                        SELECT recipe_title, recipe_url, ROWNUM AS rnum
+                        FROM final_recipe
+                        WHERE recipe_title LIKE \'%{recvalue}%\' AND RECIPE_CATEGORY_TYPE = \'{btnvalue}\'
+                    )
+                    WHERE rnum <= 20
+                '''
+        
+        
         od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
         conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
         exe = conn.cursor()

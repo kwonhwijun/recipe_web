@@ -17,6 +17,7 @@
 </style>
 </head>
 <body>
+    {% include 'polls/loading.html' %}
     {% if recipe %}
     <!-- Navigation-->
     {% include 'polls/navigation.html' %}
@@ -31,7 +32,7 @@
         </div>
     </div>
     {% endif %}
-
+    <div>
     {% if tests %}
     <ul>
         {% for test in tests %}
@@ -43,12 +44,27 @@
         {% endfor %}
     </ul>
     {% endif %}
+</div>
 <div id="result-div">
     <!-- 레시피명, 이미지 추가-->
 </div>
 
 <script>
+
     $(document).ready(function() {
+        const loading_page = $("#load");
+        $(document).ajaxStart(function() {
+            loading_page.show();
+          });
+        $(document).ajaxStop(function() {
+            loading_page.hide();
+        });
+          // 모든 리소스가 로드된 후에 실행
+          $(window).on("load", function() {
+            loading_page.hide(); // 로딩이 완료되면 loading.html을 숨김
+          });
+
+        window.scrollTo({left:0, top:500, behavior: "smooth"})
         $("button[id^='button_']").on("click", function() {
             var btnvalue = $(this).text();
             var recvalue = $("#result-test").text(); 
