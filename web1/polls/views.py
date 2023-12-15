@@ -306,6 +306,9 @@ def output_test(request):
     output = draw_recipe_recommend(matrix, recipe_index, remove_ingre)
     return render(request, 'polls/output.html', {'output': output})
 
+# /detail > 메뉴가 떴을 때 그 카드를 누르면 넘어가는 페이지 (레시피 상세설명: 식재료, 조리순서, 영양소 등 출력)
+def detail(request):
+    return render(request, 'polls/detail.html')
 
 
 # # 유사도 5개출력 테스트
