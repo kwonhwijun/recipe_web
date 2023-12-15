@@ -46,12 +46,11 @@
     {% endif %}
 </div>
 <div id="result-div">
-    <a href="detail.html">
-        <div id='recipe-group'>
+    <div id='recipe-group'>
         <!-- 레시피명, 이미지 추가-->
-        </div>
-    </a>
+    </div>
 </div>
+
 <script>
     var loading = false;
     var page = 1;  // 초기 페이지 번호
@@ -92,7 +91,7 @@
                         // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
                         if (imageUrl && recipeTitle) {
                             // 새로운 <div>를 생성하여 레시피 정보를 감싼다
-                            var recipeGroup = $("<div id='recipe-group'></div>");
+                                var recipeGroup = $("<div id='recipe-group' onclick=\"location.href='{% url 'detail' %}'\" style='cursor:pointer;'></div>");
 
                             recipeGroup.append(`<p>${recipeTitle}</p>`);
                             recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" width="200" height="200">`);
@@ -114,7 +113,7 @@
                     loading = true;
                     page++;
                     $.ajax({
-                        type: 'POST',
+                        type: 'POST', 
                         url: '/recipe_ajax/',
                         data: { btnvalue: btnvalue, recvalue: recvalue, page: page },
                         success: function (response) {
@@ -128,7 +127,7 @@
                                     // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
                                     if (imageUrl && recipeTitle) {
                                         // 새로운 <div>를 생성하여 레시피 정보를 감싼다
-                                        var recipeGroup = $("<div id='recipe-group'></div>");
+                                            var recipeGroup = $("<div id='recipe-group' onclick=\"location.href='{% url 'detail' %}'\" style='cursor:pointer;'></div>");
 
                                         recipeGroup.append(`<p>${recipeTitle}</p>`);
                                         recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" width="200" height="200">`);
