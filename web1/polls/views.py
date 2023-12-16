@@ -235,7 +235,7 @@ def recipe_ajax(request):
 def testpage(request):
     return render(request, 'polls/testpage.html')
 
-# /testpage > /output - 인덱스 입력, 식재료 제거 전 후 5개씩 출력
+# /testpage > /output - 인덱스 입력, 식재료 제거 전 후 5개씩 출력 
 def output_test(request):
     matrix = pd.read_csv(r'polls/data/food_matrix_2001.csv')
     matrix = matrix.loc[matrix.recipe_title.notna()].copy() 
@@ -244,15 +244,27 @@ def output_test(request):
     recipe_index = int(request.POST.get('recipe_index',''))
     remove_ingre = request.POST.get('remove_ingre','')
 
-    def draw_recipe_recommend(matrix, rec_num, ingd_name):
+    # input : user_med, user_dis
+    # user_med = request.POST.get('remove_ingre','')
+    # user_dis = request.POST.get('remove_ingre','')
+    # good_ingre = [] , bad_ingre = []
+    # med2food(user_med) = med_bad_ingre, med_good_ingre
+    # dis2food()  = dis_bad_ingre, dis_good_ingre
+    # output : good_ingre, bad_ingre
+
+    def draw_recipe_recommend(matrix, rec_num, ingd_name): # bad_ingre, good_ingre
         rec_title, ingd_list, rec_vec, ingd_vec = svd.matrix_decomposition(matrix)
 
         ingd_idx = ingd_list.index(ingd_name) # 삼겹살 -> 삼겹살의 index
         target_inge = ingd_vec[ingd_idx] # 삼결살의 100차원 벡터
 
 
-        myfood = rec_vec[rec_num] # 내가 원하는 음식의 벡터                          
+        myfood = rec_vec[rec_num] # 내가 원하는 음식의 벡터
+
+       # myfood = cate_vec[my_cate] 
+
         myfood_new  = myfood - 1* target_inge
+        # myfood_new = myfood - bad_ingre + good_ingre
 
         sim_before = cosine_similarity([myfood], rec_vec)[0] # 식재료 제거하기 전
         sim_after = cosine_similarity([myfood_new], rec_vec)[0] #식재료 제거한 후

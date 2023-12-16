@@ -89,8 +89,8 @@
 
         // 해당 버튼 누르면 전 페이지에서 입력한 값과 버튼 value값을 ajax로 보냄
         $("button[id^='button_']").on("click", function() {
-            btnvalue = $(this).text();
-            recvalue = $("#result-test").text();
+            btnvalue = $(this).text(); // this : 버튼의 값 ('찌개')
+            recvalue = $("#result-test").text(); // result-test :
 
             $.ajax({
                 type: 'POST',
