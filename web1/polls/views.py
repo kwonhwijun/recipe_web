@@ -193,7 +193,7 @@ def recipe_ajax(request):
         page = int(request.POST.get('page', 1))
 
         # 페이지당 아이템 수
-        items_per_page = 10
+        items_per_page = 12
 
         # 쿼리 조건에 페이징을 적용
         query = f'''

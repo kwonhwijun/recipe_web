@@ -14,6 +14,17 @@
     .div-in-result{
         border: 1px solid #9eecf1;
     }
+    .result-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+
+    }
+    .tag-container,
+    .card-container{
+        width: 80%;
+    }
+
 </style>
 </head>
 <body>
@@ -27,28 +38,32 @@
     </header>
     <!-- Services-->
     <div class="div-result">
-        <div id="result-test" style="display: none">
+        <div id="result-test" style="display: none;">
             {{recipe}}
         </div>
     </div>
     {% endif %}
-    <div>
-    {% if tests %}
-    <ul class="custom-ul">
-        {% for test in tests %}
-            <li class="custom-li">
-                <button id="button_{{ test.recipe.0 }}" class="btn blue small">
-                    {{ test.recipe.0 }}
-                </button>
-            </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-</div>
 
-<div id="result-div">
-    <div class='recipe-group'>
-        <!-- 레시피명, 이미지 추가-->
+<div class="result-container">
+    <div class="tag-container">
+        {% if tests %}
+        <ul class="custom-ul">
+            {% for test in tests %}
+                <li class="custom-li">
+                    <button id="button_{{ test.recipe.0 }}" class="btn blue small">
+                        {{ test.recipe.0 }}
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="card-container">
+        <div id="result-div">
+            <div class='recipe-group' style="display:none;">
+                <!-- 레시피명, 이미지 추가-->
+            </div>
+        </div>
     </div>
 </div>
 
@@ -94,7 +109,7 @@
                             // 새로운 <div>를 생성하여 레시피 정보를 감싼다
                             var recipeGroup = $("<div class='recipe-group' name='" + recipeTitle + "'></div>");
                             recipeGroup.append(`<p>${recipeTitle}</p>`);
-                            recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" width="200" height="200">`);
+                            recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" style="width:90%; height: 80%;">`);
 
                             // 최종적으로 resultDiv에 추가
                             resultDiv.append(recipeGroup);
@@ -105,6 +120,51 @@
                     console.error(error);
                 }
             });
+
+            // 무한스크롤. 버튼 눌렀을때부터 작동하도록 변경(누르기전에는 작동x)
+            $(window).scroll(function () {
+                if (!reachedEnd && $(window).scrollTop() + $(window).height() >= $(document).height() - 50) {
+                    if (!loading) {
+                        loading = true;
+                        page++;
+                        $.ajax({
+                            type: 'POST', 
+                            url: '/recipe_ajax/',
+                            data: { btnvalue: btnvalue, recvalue: recvalue, page: page },
+                            success: function (response) {
+                                var resultDiv = $("#result-div");
+            
+                                if (response.image_urls.length > 0) {
+                                    for (var i = 0; i < response.image_urls.length; i++) {
+                                        var imageUrl = response.image_urls[i].image_url;
+                                        var recipeTitle = response.image_urls[i].recipe;
+            
+                                        // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
+                                        if (imageUrl && recipeTitle) {
+                                            // 새로운 <div>를 생성하여 레시피 정보를 감싼다
+                                            var recipeGroup = $("<div class='recipe-group' name='" + recipeTitle + "'></div>");
+    
+                                            recipeGroup.append(`<p>${recipeTitle}</p>`);
+                                            recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" style="width:90%; height: 80%;">`);
+    
+                                            // 최종적으로 resultDiv에 추가
+                                            resultDiv.append(recipeGroup);
+                                        }
+                                    }
+                                } else {
+                                    reachedEnd = true;
+                                }
+                                loading = false;
+                            },
+                            error: function (error) {
+                                console.error(error);
+                                loading = false;
+                            }
+                        });
+                    }
+                }
+            });
+
         });
         // 생성된 div를 눌렀을때 name에 담긴 해당 레시피명을 ajax로 보내기
         $("#result-div").on("click",".recipe-group",function() {
@@ -125,52 +185,7 @@
                     console.error(error);
                 }
             });
-        });
-
-
-        // 무한스크롤
-        $(window).scroll(function () {
-            if (!reachedEnd && $(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
-                if (!loading) {
-                    loading = true;
-                    page++;
-                    $.ajax({
-                        type: 'POST', 
-                        url: '/recipe_ajax/',
-                        data: { btnvalue: btnvalue, recvalue: recvalue, page: page },
-                        success: function (response) {
-                            var resultDiv = $("#result-div");
-        
-                            if (response.image_urls.length > 0) {
-                                for (var i = 0; i < response.image_urls.length; i++) {
-                                    var imageUrl = response.image_urls[i].image_url;
-                                    var recipeTitle = response.image_urls[i].recipe;
-        
-                                    // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
-                                    if (imageUrl && recipeTitle) {
-                                        // 새로운 <div>를 생성하여 레시피 정보를 감싼다
-                                        var recipeGroup = $("<div class='recipe-group' name='" + recipeTitle + "'></div>");
-
-                                        recipeGroup.append(`<p>${recipeTitle}</p>`);
-                                        recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" width="200" height="200">`);
-
-                                        // 최종적으로 resultDiv에 추가
-                                        resultDiv.append(recipeGroup);
-                                    }
-                                }
-                            } else {
-                                reachedEnd = true;
-                            }
-                            loading = false;
-                        },
-                        error: function (error) {
-                            console.error(error);
-                            loading = false;
-                        }
-                    });
-                }
-            }
-        });
+        });        
     });
 </script>
 </body>
