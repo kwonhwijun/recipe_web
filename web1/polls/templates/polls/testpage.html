@@ -1,9 +1,9 @@
 <form action="{% url 'polls:output_test' %}" method="POST">
     {% csrf_token %}
     <label for="index">인덱스 번호:</label>
-    <input type="text" id="index" name="recipe_index">
+    <input type="text" id="index" name="pill">
     <label for="ingre">제거할 식재료명:</label>
-    <input type="text" id="ingre" name="remove_ingre">
+    <input type="text" id="ingre" name="disease">
     <button type="submit">제출</button>
 </form>
 

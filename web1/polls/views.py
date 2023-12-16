@@ -6,6 +6,7 @@ import oracledb as od
 import requests
 from bs4 import BeautifulSoup
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import os
 
 from . import recipe
 from . import db
@@ -15,6 +16,7 @@ import numpy as np
 import pandas as pd
 from sklearn.manifold import TSNE
 from sklearn.metrics.pairwise import cosine_similarity
+import pickle
 
 # db connection(select문)
 def connection(query):
@@ -235,51 +237,6 @@ def recipe_ajax(request):
 def testpage(request):
     return render(request, 'polls/testpage.html')
 
-# /testpage > /output - 인덱스 입력, 식재료 제거 전 후 5개씩 출력 
-def output_test(request):
-    matrix = pd.read_csv(r'polls/data/food_matrix_2001.csv')
-    matrix = matrix.loc[matrix.recipe_title.notna()].copy() 
-    matrix.index = range(len(matrix)) 
-    
-    recipe_index = int(request.POST.get('recipe_index',''))
-    remove_ingre = request.POST.get('remove_ingre','')
-
-    # input : user_med, user_dis
-    # user_med = request.POST.get('remove_ingre','')
-    # user_dis = request.POST.get('remove_ingre','')
-    # good_ingre = [] , bad_ingre = []
-    # med2food(user_med) = med_bad_ingre, med_good_ingre
-    # dis2food()  = dis_bad_ingre, dis_good_ingre
-    # output : good_ingre, bad_ingre
-
-    def draw_recipe_recommend(matrix, rec_num, ingd_name): # bad_ingre, good_ingre
-        rec_title, ingd_list, rec_vec, ingd_vec = svd.matrix_decomposition(matrix)
-
-        ingd_idx = ingd_list.index(ingd_name) # 삼겹살 -> 삼겹살의 index
-        target_inge = ingd_vec[ingd_idx] # 삼결살의 100차원 벡터
-
-
-        myfood = rec_vec[rec_num] # 내가 원하는 음식의 벡터
-
-       # myfood = cate_vec[my_cate] 
-
-        myfood_new  = myfood - 1* target_inge
-        # myfood_new = myfood - bad_ingre + good_ingre
-
-        sim_before = cosine_similarity([myfood], rec_vec)[0] # 식재료 제거하기 전
-        sim_after = cosine_similarity([myfood_new], rec_vec)[0] #식재료 제거한 후
-        # 차원 맞춰주기
-        sim_idx =  np.argsort(sim_before)[::-1][:5] # 기존 레시피와 유사한 레시피
-        recommend_idx = np.argsort(sim_after)[::-1][:5] # 식재료 정보를 반영한 레시피
-
-        recommend_list_before =  [rec_title[i] for i in sim_idx]
-        recommend_list_after = [rec_title[i] for i in recommend_idx]
-        print(f"선택 음식 : {rec_title[rec_num]} - 먹으면 안돼는 식재료 : {ingd_name}")
-        return recommend_list_before, recommend_list_after 
-        
-    output = draw_recipe_recommend(matrix, recipe_index, remove_ingre)
-    return render(request, 'polls/output.html', {'output': output})
-
 # /detail > 메뉴가 떴을 때 그 카드를 누르면 넘어가는 페이지 (레시피 상세설명: 식재료, 조리순서, 영양소 등 출력)
 def detail(request):
     return render(request, 'polls/detail.html')
@@ -295,40 +252,73 @@ def detail_ajax(request):
        response_data = {'recipetitle': recipetitle, 'recipe_steps': datas}
     return JsonResponse(response_data)
     
+
+#-------------------------------------------------------------------------------------------------------#
+# 레시피 추천
+def output_test(request):    
+    pill_name = request.POST.get('pill','')
+    disease_name = request.POST.get('disease','')
     
-
-
-
-
-
-# # 유사도 5개출력 테스트
-# def output_test(request):
-     
-#     recipe_title = int(request.POST.get('recipe_title',''))
-#     matrix = pd.read_csv(r'polls/data/test_matrix.csv')
-#     title, rec_vec, ingre_vec = svd.matrix_decomposition(matrix.iloc[:, 1:])
-#     print(recipe_title)
-
-#     def draw_TSNE(rec_vec, n = 0):
-#         # recipe_vec 간의 유사도 구하기
-#         sim_recipe = cosine_similarity(rec_vec , rec_vec)
-#         # TSNE로 차원 축소하기
-#         tsne = TSNE(n_components= 2)
-#         reduced_vec = tsne.fit_transform(rec_vec)
-#         def find_5idx(title, similarity, row_num = 0):
-#             similarity_pd = pd.DataFrame(similarity, columns=title)
-#             sim_list = similarity_pd.loc[row_num].sort_values(ascending= False)[1:6]
-#             idx = []
-#             for sim_title in list(sim_list.index) :
-#                 idx.extend(list(title.index[title == sim_title]))
-#             return idx
-#         output = []
-#         for i in find_5idx(title, sim_recipe, n):
-#             output.append(title[i])
-#         return output
-#     output = draw_TSNE(rec_vec, recipe_title)
+    # 받아온값 리스트 형식으로 변환
+    pill_name = [pill_name]
+    disease_name = [disease_name]
     
-#     return render(request, 'polls/output.html', {'output': output})
+    with open(r'polls/data/recipe/recipe.pickle', 'rb') as file:
+        recipe_dict = pickle.load(file)
+
+    with open(r'polls/data/recipe/ingre.pickle', 'rb') as file:
+        ingre_dict = pickle.load(file)
+
+    with open(r'polls/data/recipe/category.pickle', 'rb') as file:
+        category_dict = pickle.load(file)   
+
+    rec_title = list(recipe_dict.keys()) # 키 리스트
+    rec_vec = [recipe_dict[rec_title[i]] for i in range(len(recipe_dict))]
+    
+    # 2. 상호작용 딕셔너리 불러오기 
+    hos = pd.read_csv(r'polls/data/med/disease_interaction.csv')
+    dis_dict= {hos['질병명']: {'권장영양소' : hos['권장영양소'], '주의영양소' : hos['주의영양소'], '권장식재료' : hos['권장식재료'], '주의식재료' : hos['주의식재료']} for _, hos in hos.iterrows()}
+
+    hos = pd.read_csv(r'polls/data/med/med_interaction.csv')
+    med_dict= {hos['dname']: {'권장영양소' : hos['권장영양소'], '주의영양소' : hos['주의영양소'], '권장식재료' : hos['권장식재료'], '주의식재료' : hos['주의식재료']} for _, hos in hos.iterrows()}
+    
+    
+    def my_interaction(med_list, dis_list):
+        interaction = {'권장식재료' : [], '주의식재료' : [], '권장영양소' : [], '주의영양소' : []}
+        # 약물 정보 반영
+        for med in med_list :
+            for inter in interaction.keys():
+                if not pd.isna(med_dict[med][inter]):
+                    interaction[inter].extend([value.strip() for value in med_dict[med][inter].split(',')])
+        # 질병 정보 반영
+        for dis in dis_list :
+            for inter in interaction.keys() :
+                if not pd.isna(dis_dict[dis][inter]):
+                    interaction[inter].extend([value.strip() for value in dis_dict[dis][inter].split(',')])
+        return interaction
+    
+    def recommend(my_med_list, my_dis_list, my_food):
+        my_inter_dict = my_interaction(my_med_list, my_dis_list) # 입력한 질병, 약물을 상호작용 식재료, 영양소 불러오기
+        my_food_vec = category_dict[my_food] # 내가 선택한 카테고리의 벡터
+        my_food_vec_recommend = my_food_vec
+
+        # 권장 : + 0.01 , 주의 -0.01 배로 해줌
+        for food in my_inter_dict['권장식재료']:
+            if food in ingre_dict :
+                my_food_vec_recommend += 0.01* ingre_dict[food]
+        for food in my_inter_dict['주의식재료']:
+            if food in ingre_dict :
+                my_food_vec_recommend -=  0.01 * ingre_dict[food]
+        sim = cosine_similarity([my_food_vec_recommend], rec_vec)[0]
+        recommend_idx = np.argsort(sim)[::-1][:100]
+
+        return [rec_title[i] for i in recommend_idx]
+    # 수정해야될 부분
+    output = recommend(pill_name, disease_name, '찌개')    
+    return render(request, 'polls/output.html', {'output': output})
+
+
+
 
 
 
