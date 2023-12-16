@@ -45,8 +45,9 @@
     </ul>
     {% endif %}
 </div>
+
 <div id="result-div">
-    <div id='recipe-group'>
+    <div class='recipe-group'>
         <!-- 레시피명, 이미지 추가-->
     </div>
 </div>
@@ -91,8 +92,7 @@
                         // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
                         if (imageUrl && recipeTitle) {
                             // 새로운 <div>를 생성하여 레시피 정보를 감싼다
-                                var recipeGroup = $("<div id='recipe-group' onclick=\"location.href='{% url 'detail' %}'\" style='cursor:pointer;'></div>");
-
+                            var recipeGroup = $("<div class='recipe-group' name='" + recipeTitle + "'></div>");
                             recipeGroup.append(`<p>${recipeTitle}</p>`);
                             recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" width="200" height="200">`);
 
@@ -106,7 +106,29 @@
                 }
             });
         });
+        // 생성된 div를 눌렀을때 name에 담긴 해당 레시피명을 ajax로 보내기
+        $("#result-div").on("click",".recipe-group",function() {
+            var recipetitle = $(this).attr("name");
+            console.log(recipetitle)
+            $.ajax({
+                type: 'POST',
+                url: '/detail_ajax/',
+                data: {recipetitle: recipetitle},
+                success: function(response) {
+                    // 로컬 스토리지에 데이터 저장
+                    localStorage.setItem('recipetitle', response.recipetitle);
+                    // /detail로 이동
+                    window.location.href = '/detail/';
 
+                },
+                error: function(error) {
+                    console.error(error);
+                }
+            });
+        });
+
+
+        // 무한스크롤
         $(window).scroll(function () {
             if (!reachedEnd && $(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
                 if (!loading) {
@@ -127,7 +149,7 @@
                                     // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
                                     if (imageUrl && recipeTitle) {
                                         // 새로운 <div>를 생성하여 레시피 정보를 감싼다
-                                            var recipeGroup = $("<div id='recipe-group' onclick=\"location.href='{% url 'detail' %}'\" style='cursor:pointer;'></div>");
+                                        var recipeGroup = $("<div class='recipe-group' name='" + recipeTitle + "'></div>");
 
                                         recipeGroup.append(`<p>${recipeTitle}</p>`);
                                         recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" width="200" height="200">`);

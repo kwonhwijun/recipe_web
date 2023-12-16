@@ -41,36 +41,6 @@ def connection_idu(query):
 def index(request):
     return render(request, 'polls/index.html')
 
-# /polls/test
-@csrf_exempt
-def test(request):
-    return render(request, 'polls/test.html')
-
-# /polls/test-ajax
-@csrf_exempt
-def selecttest(request):
-    if request.method == 'POST':
-        input_value = request.POST.get('input_value')
-        
-        query = f'select nutrient, "에너지(Kcal)", "탄수화물", "단백질", "지방" from nutrient_data_table where nutrient like \'%{input_value}%\''
-        exe = connection().cursor()
-        exe.execute(query)
-        datas = exe.fetchall()
-
-        tests = []
-        for data in datas:
-            row = {
-                'nutri': data[0],
-                'energy': data[1],
-                'carbo': data[2],
-                'protein': data[3],
-                'fat': data[4]
-            }
-            tests.append(row)
-
-        return JsonResponse({'result': f'{input_value}', 'tests': tests})
-    return JsonResponse({'error': 'error'})
-
 # /home
 def home(request):
     return render(request, 'polls/home.html')
@@ -236,8 +206,6 @@ def recipe_ajax(request):
             WHERE rnum > :start_row AND rnum <= :end_row
         '''
 
-        
-        
         od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
         conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
         exe = conn.cursor()
@@ -309,6 +277,22 @@ def output_test(request):
 # /detail > 메뉴가 떴을 때 그 카드를 누르면 넘어가는 페이지 (레시피 상세설명: 식재료, 조리순서, 영양소 등 출력)
 def detail(request):
     return render(request, 'polls/detail.html')
+
+# div눌렀을때 레시피명을 가져와서 recipe_step을 /detail로 보내기
+@csrf_exempt
+def detail_ajax(request):
+    if request.method == 'POST':
+       recipetitle = request.POST.get('recipetitle', '')  
+       query = f"select recipe_step from final_recipe where recipe_title = \'{recipetitle}\'"
+       datas = connection(query)
+       
+       response_data = {'recipetitle': datas}
+    return JsonResponse(response_data)
+    
+    
+
+
+
 
 
 # # 유사도 5개출력 테스트

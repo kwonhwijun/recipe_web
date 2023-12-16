@@ -24,6 +24,9 @@
     <header class="masthead">
         <div class="masthead-heading text-uppercase">레시피 상세정보</div>
     </header>
+    <div id="detail-container">
+        <!-- 추가될 공간 -->
+    </div>
 <script>
     $(document).ready(function() {
         const loading_page = $("#load");
@@ -37,6 +40,13 @@
         $(window).on("load", function() {
             loading_page.hide();
         });
+        // 로컬 스토리지에서 데이터 읽기
+        var recipetitle = localStorage.getItem('recipetitle');
+        
+        if (recipetitle) {
+            // 읽은 데이터를 페이지에 추가
+            $("#detail-container").html("<p>" + recipetitle + "</p>");
+        };
     });
 </script>
 </body>
