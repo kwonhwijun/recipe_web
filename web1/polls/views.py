@@ -280,7 +280,7 @@ def detail_ajax(request):
        query = f"select recipe_step from final_recipe where recipe_title = \'{recipetitle}\'"
        datas = connection(query)
        
-       response_data = {'recipetitle': datas}
+       response_data = {'recipetitle': recipetitle, 'recipe_steps': datas}
     return JsonResponse(response_data)
     
     

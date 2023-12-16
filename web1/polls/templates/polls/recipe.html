@@ -177,6 +177,7 @@
                 success: function(response) {
                     // 로컬 스토리지에 데이터 저장
                     localStorage.setItem('recipetitle', response.recipetitle);
+                    localStorage.setItem('recipe_step', response.recipe_steps);
                     // /detail로 이동
                     window.location.href = '/detail/';
 

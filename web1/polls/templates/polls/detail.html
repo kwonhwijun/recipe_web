@@ -14,6 +14,15 @@
         .div-in-result{
             border: 1px solid #9eecf1;
         }
+        #step-container{
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+    
+        }
+        #detail-container{
+            width: 80%;
+        }
     </style>
 </head>
 <body>
@@ -24,7 +33,7 @@
     <header class="masthead">
         <div class="masthead-heading text-uppercase">레시피 상세정보</div>
     </header>
-    <div style="padding-top: 100px; width: 80%;">
+    <div id="step-container">
         <div id="detail-container">
             <!-- 추가될 공간 -->
         </div>
@@ -44,11 +53,33 @@
         });
         // 로컬 스토리지에서 데이터 읽기
         var recipetitle = localStorage.getItem('recipetitle');
+        var recipe_step = localStorage.getItem('recipe_step');
         
-        if (recipetitle) {
+        if (recipe_step) {
             // 읽은 데이터를 페이지에 추가
-            $("#detail-container").html("<p>" + recipetitle + "</p>");
+            $("#detail-container").html("<h3>" + recipetitle + "</h3><br>" + "<p>" + recipe_step + "</p>");
         };
+
+        var pTag = $('#detail-container p');
+        var recipeString = pTag.text();
+
+        // "["와 "]" 제거
+        var trimmedString = recipeString.slice(1, -1);
+
+        // 정규식을 사용하여 '#' 다음에 오는 내용을 추출
+        var regex = /#(\d+) ([^']*)/g;
+        var match;
+        var result = [];
+
+        while ((match = regex.exec(trimmedString)) !== null) {
+            var index = match[1];
+            var content = match[2].trim();
+            // '#' 제거 및 숫자 뒤에 '.' 추가
+            result.push(`${index}. ${content}`);
+        }
+        // 출력
+        var output = result.join(',<br>');
+        pTag.html(output);    
     });
 </script>
 </body>
