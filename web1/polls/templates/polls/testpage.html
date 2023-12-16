@@ -1,4 +1,4 @@
-<form action="{% url 'output_test' %}" method="POST">
+<form action="{% url 'polls:output_test' %}" method="POST">
     {% csrf_token %}
     <label for="index">인덱스 번호:</label>
     <input type="text" id="index" name="recipe_index">

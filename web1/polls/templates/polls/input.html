@@ -29,7 +29,7 @@
             <div class="container mt-5">
                 <br>
                 <div class="border-div">
-                <form action="{% url 'input_result' %}" method="POST">
+                <form action="{% url 'polls:input_result' %}" method="POST">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="diseaseForm" class="form-label">질병명:</label>
@@ -59,7 +59,7 @@
             <br>
                 <!-- 레시피명 입력 -->
                 <div class="border-div">
-                <form action="{% url 'input_recipe' %}" method="POST">
+                <form action="{% url 'polls:input_recipe' %}" method="POST">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="recipe" class="form-label">선호 음식명: </label>
@@ -184,7 +184,7 @@
 
             $.ajax({
                 type: "POST",
-                url: '{% url "input_ajax" %}',
+                url: '{% url "polls:input_ajax" %}',
                 data: {
                     disease: disease,
                     pill: pill,

@@ -16,8 +16,6 @@ import pandas as pd
 from sklearn.manifold import TSNE
 from sklearn.metrics.pairwise import cosine_similarity
 
-
-
 # db connection(select문)
 def connection(query):
     od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
@@ -36,10 +34,6 @@ def connection_idu(query):
     exe.execute(query)   
     conn.commit()
     exe.close()   
-
-# /index
-def index(request):
-    return render(request, 'polls/index.html')
 
 # /home
 def home(request):

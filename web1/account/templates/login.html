@@ -21,7 +21,7 @@
           <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">회원가입</label>
           <div class="login-form">
             <div class="sign-in-htm">
-            <form id="login-form" action="{% url 'login' %}" method="POST">
+            <form id="login-form" action="{% url 'account:login' %}" method="POST">
                 {% csrf_token %}
             <div class="group">
                 <label for="username" class="form-label label">아이디</label>
@@ -48,7 +48,7 @@
               </div>
             </div>
             <div class="sign-up-htm">
-            <form id="signup-form" action="{% url 'signup_ajax' %}" method="POST">
+            <form id="signup-form" action="{% url 'account:signup_ajax' %}" method="POST">
                 {% csrf_token %}
               <div class="group">
                 <label for="username" class="form-label label">아이디</label>
@@ -91,7 +91,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "{% url 'signup_ajax' %}",
+                url: "{% url 'account:signup_ajax' %}",
                 data: $(this).serialize(),
                 dataType: "json",
                 success: function (data) {
@@ -113,7 +113,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "{% url 'login_ajax' %}",
+                url: "{% url 'account:login_ajax' %}",
                 data: $(this).serialize(),
                 dataType: "json",
                 success: function (data) {

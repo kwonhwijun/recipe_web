@@ -15,32 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-import polls.views
-import account.views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('polls/', include('polls.urls')),
-    path('', polls.views.home, name='home'),
-    path('home/', polls.views.home, name='home'),
-    path('input/', polls.views.input, name='input'),
-    path('result/', polls.views.input_result, name = 'input_result'),
-    path('input_ajax/', polls.views.input_ajax, name='input_ajax'),
-    path('login/', account.views.login, name='login'),
-    path('signup_ajax/', account.views.signup_ajax, name='signup_ajax'),
-    path('login_ajax/', account.views.login_ajax, name='login_ajax'),
-    path('logout/', account.views.logout, name='logout'),
-    path('delete/', account.views.delete, name='delete'),
-    path('profile/',account.views.profile, name='profile'),
-    path('edit_profile/', account.views.edit_profile, name='edit_profile'),
-    path('auto_complete_pill/', polls.views.auto_complete_pill, name='auto_complete_pill'),
-    path('auto_complete_disease/', polls.views.auto_complete_disease, name='auto_complete_disease'),
-    path('recipe/', polls.views.input_recipe, name = 'input_recipe'),
-    path('recipe_ajax/', polls.views.recipe_ajax, name='recipe_ajax'),
-    path('load_ajax/', polls.views.load_ajax, name='load_ajax'),
-    path('testpage/', polls.views.testpage, name='testpage'),
-    path('output/', polls.views.output_test, name='output_test'),
-    path('delete_info/', polls.views.delete_info, name='delete_info'),
-    path('detail/', polls.views.detail, name='detail'),
-    path('detail_ajax/', polls.views.detail_ajax, name='detail_ajax'),
+    path('', include('polls.urls')),    
+    path('', include('account.urls'))
 ]
