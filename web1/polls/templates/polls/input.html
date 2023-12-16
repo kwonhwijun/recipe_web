@@ -14,7 +14,12 @@
             border: 1px solid #9eecf1;
             padding: 10px;
         }
-
+        #hide-btn{
+            zoom:0.8;
+        }
+        .btn-info{
+            zoom: 0.65;
+        }
     </style>
 </head>
     <body id="page-top">
@@ -51,9 +56,11 @@
                     </div>
                     <button type="submit" id="input-value" class="btn btn-primary">제출</button>
                 </form>
-                <div id="user-result">
-                    <!--여기에 입력한값 출력-->
-                </div>
+                <input type="button" id="hide-btn" value="입력했던 정보 보기" class="btn btn-primary">
+                    <div id="user-result">
+                        <!--여기에 입력한값 출력-->
+                    </div>
+                </input>
                 </div>
                 </div>
             <br>
@@ -92,6 +99,8 @@
 <script>
     $(document).ready(function () {
         window.scrollTo({left:0, top:500, behavior: "smooth"})
+        $('#user-result').hide(); // 유저가 입력했던 정보를 일단 숨김
+
         var userId = "{{ request.user.id }}";
         if (userId && !isNaN(parseInt(userId, 10)) && parseInt(userId, 10) > 0) { //로그인 되어있을때만 load_ajax 실행
             load_ajax();
@@ -112,8 +121,8 @@
                     for (var i = 0; i < response.results.length; i++) {
                         var entryKey = response.results[i].disease + "|" + response.results[i].pill; // 질병명, 약이름 중복 체크
                         if (!unique[entryKey]) {
-                            result += "<button class='insert_btn'>"+response.results[i].disease + ", " + response.results[i].pill +
-                                "<button class='delete-btn' data-disease='" + response.results[i].disease +
+                            result += "<button class='insert_btn btn btn-info'>"+response.results[i].disease + ", " + response.results[i].pill +
+                                "</button><button class='delete-btn btn btn-info' data-disease='" + response.results[i].disease +
                                 "' data-pill='" + response.results[i].pill + "'>x</button> <br>";    
                             unique[entryKey] = true; // 중복된 항목 방지
                         }
@@ -240,6 +249,11 @@
                     });
                 }
             });
+        });
+
+
+        $("#hide-btn").on("click", function () {
+            $('#user-result').toggle() // 숨김처리 했던 입력정보 출력하기!
         });
     });
 </script>
