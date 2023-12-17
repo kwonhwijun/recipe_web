@@ -109,9 +109,9 @@
             },
             success: function(response) {
                 var interaction = $('.div-interaction');
-                var disease = $('<p>').text(response.result1);
+                var disease = $('<p>').text('권장식재료: ' + response.result1.good_ingre + '/주의식재료: ' + response.result1.bad_ingre);
                 interaction.append(disease);
-                var pill = $('<p>').text(response.result2);
+                var pill = $('<p>').text('약 상호작용: ' + response.result2);
                 interaction.append(pill);
             },
             error: function(error) {
@@ -230,7 +230,7 @@
                     // 로컬 스토리지에 데이터 저장
                     localStorage.setItem('recipetitle', response.recipetitle);
                     localStorage.setItem('recipe_step', response.recipe_step);
-                    localStorage.setItem('recipetitle', response.recipe_ingre);
+                    localStorage.setItem('recipe_ingre', response.recipe_ingre);
                     // /detail로 이동
                     window.location.href = '/detail/';
 

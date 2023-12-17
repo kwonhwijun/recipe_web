@@ -185,12 +185,23 @@ def detail_ajax(request):
 def interaction_ajax(request):
     inter_disease = request.POST.get('disease','')
     inter_pill = request.POST.get('pill', '')
-    query1 = f"select 권장식재료 from disease_table where 질병명 = \'{inter_disease}\'"
+    query1 = f"select 권장식재료, 주의식재료 from disease_table where 질병명 = \'{inter_disease}\'"
     query2 = f"select MERGED_CONTENTS from pill_table where DNAME = \'{inter_pill}\'"
     disease = connection(query1)
     pill = connection(query2)
+    
+    good_ingre = []
+    bad_ingre = []
+
+    for row in disease:
+        good_ingre.append(row[0])  # Assuming '권장식재료' is the first column
+        bad_ingre.append(row[1])   # Assuming '주의식재료' is the second column
+    
     response_data = {
-        'result1': disease,
+        'result1': {
+            'good_ingre' : good_ingre,
+            'bad_ingre' : bad_ingre
+        },
         'result2': pill
     }
     return JsonResponse(response_data)
