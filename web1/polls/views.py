@@ -316,11 +316,3 @@ def output_test(request):
     # 수정해야될 부분
     output = recommend(pill_name, disease_name, '찌개')    
     return render(request, 'polls/output.html', {'output': output})
-
-
-
-
-
-
-
-
