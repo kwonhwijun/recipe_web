@@ -221,16 +221,19 @@
         // 생성된 div를 눌렀을때 name에 담긴 해당 레시피명을 ajax로 보내기
         $("#result-div").on("click",".recipe-group",function() {
             var recipetitle = $(this).attr("name");
-            console.log(recipetitle)
             $.ajax({
                 type: 'POST',
                 url: '/detail_ajax/',
                 data: {recipetitle: recipetitle},
                 success: function(response) {
                     // 로컬 스토리지에 데이터 저장
+                    console.log(response.recipetitle)
+                    console.log(response.recipe_step)
+                    console.log(response.recipe_ingre)
                     localStorage.setItem('recipetitle', response.recipetitle);
                     localStorage.setItem('recipe_step', response.recipe_step);
                     localStorage.setItem('recipe_ingre', response.recipe_ingre);
+
                     // /detail로 이동
                     window.location.href = '/detail/';
 
