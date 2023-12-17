@@ -256,21 +256,25 @@ def output_test(request):
         return interaction
     
     def recommend(my_med_list, my_dis_list, my_food):
-        my_inter_dict = my_interaction(my_med_list, my_dis_list) # 입력한 질병, 약물을 상호작용 식재료, 영양소 불러오기
-        my_food_vec = category_dict[my_food] # 내가 선택한 카테고리의 벡터
-        my_food_vec_recommend = my_food_vec
+        try : 
+            my_inter_dict = my_interaction(my_med_list, my_dis_list) # 입력한 질병, 약물을 상호작용 식재료, 영양소 불러오기
+            my_food_vec = category_dict[my_food] # 내가 선택한 카테고리의 벡터
+            my_food_vec_recommend = my_food_vec
 
-        # 권장 : + 0.01 , 주의 -0.01 배로 해줌
-        for food in my_inter_dict['권장식재료']:
-            if food in ingre_dict :
-                my_food_vec_recommend += 0.01* ingre_dict[food]
-        for food in my_inter_dict['주의식재료']:
-            if food in ingre_dict :
-                my_food_vec_recommend -=  0.01 * ingre_dict[food]
-        sim = cosine_similarity([my_food_vec_recommend], rec_vec)[0]
-        recommend_idx = np.argsort(sim)[::-1][:100]
+            # 권장 : + 0.01 , 주의 -0.01 배로 해줌
+            for food in my_inter_dict['권장식재료']:
+                if food in ingre_dict :
+                    my_food_vec_recommend += 0.01* ingre_dict[food]
+            for food in my_inter_dict['주의식재료']:
+                if food in ingre_dict :
+                    my_food_vec_recommend -=  0.01 * ingre_dict[food]
+            sim = cosine_similarity([my_food_vec_recommend], rec_vec)[0]
+            recommend_idx = np.argsort(sim)[::-1][:100]
 
-        return [rec_title[i] for i in recommend_idx]
+            return [rec_title[i] for i in recommend_idx]
+        except Exception as e:
+            return []
+    
     # 수정해야될 부분
     output = recommend(pill_name, disease_name, btn_value)
     od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
