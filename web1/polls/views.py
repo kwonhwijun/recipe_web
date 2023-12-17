@@ -1,20 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
 from django.http import JsonResponse
 import oracledb as od
 import requests
 from bs4 import BeautifulSoup
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-import os
-
-from . import recipe
-from . import db
-from . import svd
 
 import numpy as np
 import pandas as pd
-from sklearn.manifold import TSNE
 from sklearn.metrics.pairwise import cosine_similarity
 import pickle
 
@@ -133,22 +125,6 @@ def input_result(request):
     
     return render(request, 'polls/recipe.html', {'tests': tests, 'disease': disease, 'pill': pill})
 
-# /input - form태그 >> /recipe 페이지
-# def input_recipe(request):
-#     # 레시피 input페이지에서 recipe페이지로 보내기
-#     recipe = request.POST.get('recipe','')
-    
-#     # recipe페이지에서 버튼 생성할 value
-#     query = f'select recipe_category_type from final_recipe group by RECIPE_CATEGORY_TYPE'
-#     datas = connection(query)
-
-#     tests = []
-#     for data in datas:
-#         row = {'recipe': data}
-#         tests.append(row)
-    
-#     return render(request, 'polls/recipe.html', {'tests': tests, 'recipe': recipe})
-
 # /input - 약이름 자동완성 ajax
 @csrf_exempt
 def auto_complete_pill(request):
@@ -187,64 +163,6 @@ def auto_complete_disease(request):
             datas = [row[0] for row in cursor.fetchmany(30)] # 30개만 출력
 
         return JsonResponse(datas, safe=False)
-    
-# /recipe - 레시피와 버튼 value(분류)를 가져와 쿼리문 실행
-# @csrf_exempt
-# def recipe_ajax(request):
-#     if request.method == 'POST':
-#         recvalue = request.POST.get('recvalue', '').strip() #공백제거
-#         btnvalue = request.POST.get('btnvalue', '').strip()
-
-#         page = int(request.POST.get('page', 1))
-
-#         # 페이지당 아이템 수
-#         items_per_page = 12
-
-#         # 쿼리 조건에 페이징을 적용
-#         query = f'''
-#             SELECT recipe_title, recipe_url
-#             FROM (
-#                 SELECT recipe_title, recipe_url, ROWNUM AS rnum
-#                 FROM final_recipe
-#                 WHERE recipe_title LIKE :recvalue AND RECIPE_CATEGORY_TYPE = :btnvalue
-#             )
-#             WHERE rnum > :start_row AND rnum <= :end_row
-#         '''
-
-#         od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
-#         conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
-#         exe = conn.cursor()
-#         exe.execute(query, {'recvalue': f'%{recvalue}%', 'btnvalue': btnvalue, 'start_row': (page - 1) * items_per_page, 'end_row': page * items_per_page})
-#         datas = exe.fetchall()
-        
-#         result = []
-#         columns = [desc[0] for desc in exe.description]
-
-#         for data in datas:
-#             row = {columns[i]: data[i] for i in range(len(columns))}
-#             result.append(row)
-
-#         # 이미지 URL을 저장할 리스트
-#         image_urls = []
-
-#         for recipe in result:
-#             # 각 레시피의 URL에서 이미지를 가져옴
-#             response = requests.get(recipe.get('RECIPE_URL', ''))
-#             soup = BeautifulSoup(response.content, 'html.parser')
-#             img_tag = soup.find('img', id='main_thumbs')
-
-#             if img_tag:
-#                 image_url = img_tag['src']
-#                 image_urls.append({'recipe': recipe.get('RECIPE_TITLE', ''), 'image_url': image_url})
-                
-#         conn.close()
-#         return JsonResponse({'image_urls': image_urls})
-
-#     return JsonResponse({'error': 'Invalid request'})
-
-# test페이지
-def testpage(request):
-    return render(request, 'polls/testpage.html')
 
 # /detail > 메뉴가 떴을 때 그 카드를 누르면 넘어가는 페이지 (레시피 상세설명: 식재료, 조리순서, 영양소 등 출력)
 def detail(request):
@@ -264,6 +182,7 @@ def detail_ajax(request):
 
 #-------------------------------------------------------------------------------------------------------#
 # 레시피 추천
+# /recipe - 레시피와 버튼 value(분류)를 가져와 쿼리문 실행
 @csrf_exempt
 def output_test(request):    
     pill_name = request.POST.get('pillvalue','')
@@ -369,5 +288,3 @@ def output_test(request):
 
     conn.close()
     return JsonResponse({'image_urls': image_urls, 'page': page, 'has_next': len(output_page) == per_page})
-
-    # return render(request, 'polls/.html', {'output': output})
