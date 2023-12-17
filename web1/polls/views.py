@@ -237,7 +237,7 @@ def output_test(request):
     hos = pd.read_csv(r'polls/data/med/disease_interaction.csv')
     dis_dict= {hos['질병명']: {'권장영양소' : hos['권장영양소'], '주의영양소' : hos['주의영양소'], '권장식재료' : hos['권장식재료'], '주의식재료' : hos['주의식재료']} for _, hos in hos.iterrows()}
 
-    hos = pd.read_csv(r'polls/data/med/med_interaction.csv')
+    hos = pd.read_csv(r'polls/data/med/med_interaction_merged.csv')
     med_dict= {hos['dname']: {'권장영양소' : hos['권장영양소'], '주의영양소' : hos['주의영양소'], '권장식재료' : hos['권장식재료'], '주의식재료' : hos['주의식재료']} for _, hos in hos.iterrows()}
     
     
