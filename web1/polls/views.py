@@ -280,7 +280,7 @@ def output_test(request):
     od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
     conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
     
-    per_page = 10  # 한 페이지에 표시할 레시피 수
+    per_page = 12  # 한 페이지에 표시할 레시피 수
 
     # 페이지 번호 가져오기
     page = int(request.POST.get('page', 1))
