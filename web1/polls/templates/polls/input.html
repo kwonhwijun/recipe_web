@@ -11,18 +11,34 @@
 
     <style>
         .border-div{
-            border: 1px solid #9eecf1;
+            border: 2px solid black;
             padding: 10px;
+            border-radius: 15px; 
         }
         #hide-btn{
-            zoom:0.8;
+            zoom:0.7;
         }
         .btn-info{
             zoom: 0.65;
         }
+        .input-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+      
+        .submit-class {
+            margin-top: auto;
+            padding-top: 15%;
+            padding-bottom: 5%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
     </style>
 </head>
-    <body id="page-top">
+<body id="page-top">
         <!-- Navigation-->
         {% include 'polls/navigation.html' %}
         <!-- Masthead-->
@@ -30,10 +46,11 @@
 			<div class="masthead-heading text-uppercase">정보 입력</div>
         </header>
         <!-- Services-->
-        <div class="paading-div" style="padding-left: 10%; padding-right: 10%">
+        <div class="paading-div" style="padding-left: 20%; padding-right: 20%">            
             <div class="container mt-5">
                 <br>
-                <div class="border-div">
+                <div class="border-div" style="background-color: #777">
+                <div class="border-div-in" style="margin: 5%;">
                 <form action="{% url 'polls:input_result' %}" method="POST">
                     {% csrf_token %}
                     <div class="mb-3">
@@ -54,28 +71,23 @@
                             {% endfor %}
                         </datalist>
                     </div>
-                    <button type="submit" id="input-value" class="btn btn-primary">제출</button>
-                </form>
-                <input type="button" id="hide-btn" value="입력했던 정보 보기" class="btn btn-primary">
-                    <div id="user-result">
-                        <!--여기에 입력한값 출력-->
+                    <div class='input-info'>
+                        <input type="button" id="hide-btn" value="입력했던 정보 보기" class="btn btn-primary">
+                            <div id="user-result">
+                                <!--여기에 입력한값 출력-->
+                            </div>
+                        </input>
                     </div>
-                </input>
+                    <div class='submit-class'>
+                        <div style="width:30%;">
+                            <button type="submit" id="input-value" class="btn btn-primary" style="width:100%;">제출하기</button>
+                        </div>
+                    </div>
+                </form>
                 </div>
                 </div>
-            <br>
-                <!-- 레시피명 입력 -->
-                {% comment %} <div class="border-div">
-                <form action="{% url 'polls:input_recipe' %}" method="POST">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="recipe" class="form-label">선호 음식명: </label>
-                        <input type="text" class="form-control" id="recipe" name="recipe" placeholder="선호 음식 종류">
-                    </div>
-                    <button type="submit" class="btn btn-primary">제출</button>
-                </form>
-                </div> {% endcomment %}
             </div>
+            <div>
         </div>
         <!-- Footer-->
         <footer class="footer py-4">
@@ -250,8 +262,6 @@
                 }
             });
         });
-
-
         $("#hide-btn").on("click", function () {
             $('#user-result').toggle() // 숨김처리 했던 입력정보 출력하기!
         });
