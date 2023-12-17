@@ -122,14 +122,7 @@ def delete_info(request):
 def input_result(request):
     disease = request.POST.get('disease','')
     pill = request.POST.get('pill','')
-    return render(request, 'polls/input_result.html', {'disease': disease, 'pill': pill})
-
-# /input - form태그 >> /recipe 페이지
-def input_recipe(request):
-    # 레시피 input페이지에서 recipe페이지로 보내기
-    recipe = request.POST.get('recipe','')
     
-    # recipe페이지에서 버튼 생성할 value
     query = f'select recipe_category_type from final_recipe group by RECIPE_CATEGORY_TYPE'
     datas = connection(query)
 
@@ -138,7 +131,23 @@ def input_recipe(request):
         row = {'recipe': data}
         tests.append(row)
     
-    return render(request, 'polls/recipe.html', {'tests': tests, 'recipe': recipe})
+    return render(request, 'polls/recipe.html', {'tests': tests, 'disease': disease, 'pill': pill})
+
+# /input - form태그 >> /recipe 페이지
+# def input_recipe(request):
+#     # 레시피 input페이지에서 recipe페이지로 보내기
+#     recipe = request.POST.get('recipe','')
+    
+#     # recipe페이지에서 버튼 생성할 value
+#     query = f'select recipe_category_type from final_recipe group by RECIPE_CATEGORY_TYPE'
+#     datas = connection(query)
+
+#     tests = []
+#     for data in datas:
+#         row = {'recipe': data}
+#         tests.append(row)
+    
+#     return render(request, 'polls/recipe.html', {'tests': tests, 'recipe': recipe})
 
 # /input - 약이름 자동완성 ajax
 @csrf_exempt
@@ -180,58 +189,58 @@ def auto_complete_disease(request):
         return JsonResponse(datas, safe=False)
     
 # /recipe - 레시피와 버튼 value(분류)를 가져와 쿼리문 실행
-@csrf_exempt
-def recipe_ajax(request):
-    if request.method == 'POST':
-        recvalue = request.POST.get('recvalue', '').strip() #공백제거
-        btnvalue = request.POST.get('btnvalue', '').strip()
+# @csrf_exempt
+# def recipe_ajax(request):
+#     if request.method == 'POST':
+#         recvalue = request.POST.get('recvalue', '').strip() #공백제거
+#         btnvalue = request.POST.get('btnvalue', '').strip()
 
-        page = int(request.POST.get('page', 1))
+#         page = int(request.POST.get('page', 1))
 
-        # 페이지당 아이템 수
-        items_per_page = 12
+#         # 페이지당 아이템 수
+#         items_per_page = 12
 
-        # 쿼리 조건에 페이징을 적용
-        query = f'''
-            SELECT recipe_title, recipe_url
-            FROM (
-                SELECT recipe_title, recipe_url, ROWNUM AS rnum
-                FROM final_recipe
-                WHERE recipe_title LIKE :recvalue AND RECIPE_CATEGORY_TYPE = :btnvalue
-            )
-            WHERE rnum > :start_row AND rnum <= :end_row
-        '''
+#         # 쿼리 조건에 페이징을 적용
+#         query = f'''
+#             SELECT recipe_title, recipe_url
+#             FROM (
+#                 SELECT recipe_title, recipe_url, ROWNUM AS rnum
+#                 FROM final_recipe
+#                 WHERE recipe_title LIKE :recvalue AND RECIPE_CATEGORY_TYPE = :btnvalue
+#             )
+#             WHERE rnum > :start_row AND rnum <= :end_row
+#         '''
 
-        od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
-        conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
-        exe = conn.cursor()
-        exe.execute(query, {'recvalue': f'%{recvalue}%', 'btnvalue': btnvalue, 'start_row': (page - 1) * items_per_page, 'end_row': page * items_per_page})
-        datas = exe.fetchall()
+#         od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
+#         conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
+#         exe = conn.cursor()
+#         exe.execute(query, {'recvalue': f'%{recvalue}%', 'btnvalue': btnvalue, 'start_row': (page - 1) * items_per_page, 'end_row': page * items_per_page})
+#         datas = exe.fetchall()
         
-        result = []
-        columns = [desc[0] for desc in exe.description]
+#         result = []
+#         columns = [desc[0] for desc in exe.description]
 
-        for data in datas:
-            row = {columns[i]: data[i] for i in range(len(columns))}
-            result.append(row)
+#         for data in datas:
+#             row = {columns[i]: data[i] for i in range(len(columns))}
+#             result.append(row)
 
-        # 이미지 URL을 저장할 리스트
-        image_urls = []
+#         # 이미지 URL을 저장할 리스트
+#         image_urls = []
 
-        for recipe in result:
-            # 각 레시피의 URL에서 이미지를 가져옴
-            response = requests.get(recipe.get('RECIPE_URL', ''))
-            soup = BeautifulSoup(response.content, 'html.parser')
-            img_tag = soup.find('img', id='main_thumbs')
+#         for recipe in result:
+#             # 각 레시피의 URL에서 이미지를 가져옴
+#             response = requests.get(recipe.get('RECIPE_URL', ''))
+#             soup = BeautifulSoup(response.content, 'html.parser')
+#             img_tag = soup.find('img', id='main_thumbs')
 
-            if img_tag:
-                image_url = img_tag['src']
-                image_urls.append({'recipe': recipe.get('RECIPE_TITLE', ''), 'image_url': image_url})
+#             if img_tag:
+#                 image_url = img_tag['src']
+#                 image_urls.append({'recipe': recipe.get('RECIPE_TITLE', ''), 'image_url': image_url})
                 
-        conn.close()
-        return JsonResponse({'image_urls': image_urls})
+#         conn.close()
+#         return JsonResponse({'image_urls': image_urls})
 
-    return JsonResponse({'error': 'Invalid request'})
+#     return JsonResponse({'error': 'Invalid request'})
 
 # test페이지
 def testpage(request):
@@ -255,14 +264,16 @@ def detail_ajax(request):
 
 #-------------------------------------------------------------------------------------------------------#
 # 레시피 추천
+@csrf_exempt
 def output_test(request):    
-    pill_name = request.POST.get('pill','')
-    disease_name = request.POST.get('disease','')
+    pill_name = request.POST.get('pillvalue','')
+    disease_name = request.POST.get('diseasevalue','')
+    btn_value = request.POST.get('btnvalue', '').strip()
     
     # 받아온값 리스트 형식으로 변환
     pill_name = [pill_name]
     disease_name = [disease_name]
-    
+    print(pill_name, disease_name, btn_value)
     with open(r'polls/data/recipe/recipe.pickle', 'rb') as file:
         recipe_dict = pickle.load(file)
 
@@ -314,5 +325,49 @@ def output_test(request):
 
         return [rec_title[i] for i in recommend_idx]
     # 수정해야될 부분
-    output = recommend(pill_name, disease_name, '찌개')    
-    return render(request, 'polls/output.html', {'output': output})
+    output = recommend(pill_name, disease_name, btn_value)
+    od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
+    conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
+    
+    per_page = 10  # 한 페이지에 표시할 레시피 수
+
+    # 페이지 번호 가져오기
+    page = int(request.POST.get('page', 1))
+
+    # 페이징 처리를 위해 시작 인덱스와 종료 인덱스 계산
+    start_index = (page - 1) * per_page
+    end_index = start_index + per_page
+
+    # 페이지에 해당하는 데이터 가져오기
+    output_page = output[start_index:end_index]
+    result = []
+    
+    for recipe in output_page:
+        query = "SELECT recipe_title, recipe_url FROM final_recipe WHERE recipe_title = :recipe"
+        exe = conn.cursor()
+        exe.execute(query, {'recipe': recipe})
+        data = exe.fetchone()
+        exe.close()
+
+        if data:
+            result.append({
+                'RECIPE_TITLE': data[0],
+                'RECIPE_URL': data[1]
+            })
+    
+    image_urls = []
+    print(result)
+    for recipe in result:
+        # 각 레시피의 URL에서 이미지를 가져옴
+        response = requests.get(recipe.get('RECIPE_URL', ''))
+        soup = BeautifulSoup(response.content, 'html.parser')
+        img_tag = soup.find('img', id='main_thumbs')
+
+        if img_tag:
+            image_url = img_tag['src']
+            image_urls.append({'recipe': recipe.get('RECIPE_TITLE', ''), 'image_url': image_url})
+
+    conn.close()
+    return JsonResponse({'image_urls': image_urls, 'page': page, 'has_next': len(output_page) == per_page})
+
+    # return render(request, 'polls/.html', {'output': output})

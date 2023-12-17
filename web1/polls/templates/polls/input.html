@@ -65,7 +65,7 @@
                 </div>
             <br>
                 <!-- 레시피명 입력 -->
-                <div class="border-div">
+                {% comment %} <div class="border-div">
                 <form action="{% url 'polls:input_recipe' %}" method="POST">
                     {% csrf_token %}
                     <div class="mb-3">
@@ -74,7 +74,7 @@
                     </div>
                     <button type="submit" class="btn btn-primary">제출</button>
                 </form>
-                </div>
+                </div> {% endcomment %}
             </div>
         </div>
         <!-- Footer-->

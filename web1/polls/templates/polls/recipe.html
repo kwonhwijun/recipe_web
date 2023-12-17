@@ -29,7 +29,6 @@
 </head>
 <body>
     {% include 'polls/loading.html' %}
-    {% if recipe %}
     <!-- Navigation-->
     {% include 'polls/navigation.html' %}
     <!-- Masthead-->
@@ -37,12 +36,10 @@
         <div class="masthead-heading text-uppercase">선호음식 선택</div>
     </header>
     <!-- Services-->
-    <div class="div-result">
-        <div id="result-test" style="display: none;">
-            {{recipe}}
-        </div>
+    <div class="div-in-result">
+        <p class='p-disease'>{{ disease }}</p>
+        <p class='p-pill'>{{ pill }}</p>
     </div>
-    {% endif %}
 
 <div class="result-container">
     <div class="tag-container">
@@ -93,99 +90,100 @@
     var reachedEnd = false;
     var btnvalue;
     var recvalue;
-
+    
     $(document).ready(function() {
         const loading_page = $("#load");
         $(document).ajaxStart(function() {
             loading_page.show();
-          });
+        });
         $(document).ajaxStop(function() {
             loading_page.hide();
         });
-          // 모든 리소스가 로드된 후에 실행
+        // 모든 리소스가 로드된 후에 실행
         $(window).on("load", function() {
             loading_page.hide(); // 로딩이 완료되면 loading.html을 숨김
         });
-
+    
         // 해당 버튼 누르면 전 페이지에서 입력한 값과 버튼 value값을 ajax로 보냄
         $("button[id^='button_']").on("click", function() {
-            btnvalue = $(this).text(); // this : 버튼의 값 ('찌개')
-            recvalue = $("#result-test").text(); // result-test :
-
+            var btnvalue = $(this).text();
+            var diseasevalue = $('.p-disease').text();
+            var pillvalue = $('.p-pill').text();
+    
             $.ajax({
                 type: 'POST',
-                url: '/recipe_ajax/',
-                data: { btnvalue: btnvalue, recvalue: recvalue },
+                url: '/output_test/',
+                data: { btnvalue: btnvalue, diseasevalue: diseasevalue, pillvalue: pillvalue},
                 success: function(response) {
                     var resultDiv = $("#result-div");
                     resultDiv.empty();
-
+    
                     for (var i = 0; i < response.image_urls.length; i++) {
                         var imageUrl = response.image_urls[i].image_url;
                         var recipeTitle = response.image_urls[i].recipe;
-
+    
                         // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
                         if (imageUrl && recipeTitle) {
                             // 새로운 <div>를 생성하여 레시피 정보를 감싼다
                             var recipeGroup = $("<div class='recipe-group' name='" + recipeTitle + "'></div>");
                             recipeGroup.append(`<p>${recipeTitle}</p>`);
                             recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" style="width:90%; height: 80%;">`);
-
+    
                             // 최종적으로 resultDiv에 추가
                             resultDiv.append(recipeGroup);
                         }
                     }
-                },
-                error: function(error) {
-                    console.error(error);
-                }
-            });
-
-            // 무한스크롤. 버튼 눌렀을때부터 작동하도록 변경(누르기전에는 작동x)
-            $(window).scroll(function () {
-                if (!reachedEnd && $(window).scrollTop() + $(window).height() >= $(document).height() - 50) {
-                    if (!loading) {
-                        loading = true;
-                        page++;
-                        $.ajax({
-                            type: 'POST', 
-                            url: '/recipe_ajax/',
-                            data: { btnvalue: btnvalue, recvalue: recvalue, page: page },
-                            success: function (response) {
-                                var resultDiv = $("#result-div");
-            
-                                if (response.image_urls.length > 0) {
-                                    for (var i = 0; i < response.image_urls.length; i++) {
-                                        var imageUrl = response.image_urls[i].image_url;
-                                        var recipeTitle = response.image_urls[i].recipe;
-            
-                                        // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
-                                        if (imageUrl && recipeTitle) {
-                                            // 새로운 <div>를 생성하여 레시피 정보를 감싼다
-                                            var recipeGroup = $("<div class='recipe-group' name='" + recipeTitle + "'></div>");
-    
-                                            recipeGroup.append(`<p>${recipeTitle}</p>`);
-                                            recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" style="width:90%; height: 80%;">`);
-    
-                                            // 최종적으로 resultDiv에 추가
-                                            resultDiv.append(recipeGroup);
+                    // ajax 성공시 무한스크롤 작동
+                    $(window).scroll(function() {
+                        if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+                            // 스크롤이 맨 아래에 도달하면 새로운 페이지를 로드
+                            if (!reachedEnd && !loading) {
+                                loading = true;
+                                page += 1;
+                    
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/output_test/',
+                                    data: { btnvalue: btnvalue, diseasevalue: diseasevalue, pillvalue: pillvalue, page: page },
+                                    success: function(response) {
+                                        var resultDiv = $("#result-div");
+                    
+                                        if (response.has_next) {
+                                            for (var i = 0; i < response.image_urls.length; i++) {
+                                                var imageUrl = response.image_urls[i].image_url;
+                                                var recipeTitle = response.image_urls[i].recipe;
+                    
+                                                // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
+                                                if (imageUrl && recipeTitle) {
+                                                    // 새로운 <div>를 생성하여 레시피 정보를 감싼다
+                                                    var recipeGroup = $("<div class='recipe-group' name='" + recipeTitle + "'></div>");
+                                                    recipeGroup.append(`<p>${recipeTitle}</p>`);
+                                                    recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" style="width:90%; height: 80%;">`);
+                    
+                                                    // 최종적으로 resultDiv에 추가
+                                                    resultDiv.append(recipeGroup);
+                                                }
+                                            }
+                                        } else {
+                                            reachedEnd = true;
                                         }
+                    
+                                        loading = false;
+                                    },
+                                    error: function(error) {
+                                        console.error(error);
+                                        loading = false;
                                     }
-                                } else {
-                                    reachedEnd = true;
-                                }
-                                loading = false;
-                            },
-                            error: function (error) {
-                                console.error(error);
-                                loading = false;
+                                });
                             }
-                        });
+                        }
+                    });                    
+                    },
+                    error: function(error) {
+                        console.error(error);
                     }
-                }
+                });
             });
-
-        });
         // 생성된 div를 눌렀을때 name에 담긴 해당 레시피명을 ajax로 보내기
         $("#result-div").on("click",".recipe-group",function() {
             var recipetitle = $(this).attr("name");
@@ -206,7 +204,7 @@
                     console.error(error);
                 }
             });
-        });        
+        });
     });
 </script>
 </body>
