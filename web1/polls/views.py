@@ -172,12 +172,29 @@ def detail(request):
 @csrf_exempt
 def detail_ajax(request):
     if request.method == 'POST':
-       recipetitle = request.POST.get('recipetitle', '')  
-       query = f"select recipe_step from final_recipe where recipe_title = \'{recipetitle}\'"
-       datas = connection(query)
-       
-       response_data = {'recipetitle': recipetitle, 'recipe_steps': datas}
+       recipetitle = request.POST.get('recipetitle', '') 
+       query1 = f"select recipe_step from final_recipe where recipe_title = \'{recipetitle}\'"
+       query2 = f"select recipe_ingredients from final_recipe where recipe_title = \'{recipetitle}\'"
+       data1 = connection(query1)
+       data2 = connection(query2)
+    response_data = {'recipetitle': recipetitle, 'recipe_step': data1, 'recipe_ingre': data2}
     return JsonResponse(response_data)
+
+# 상호작용 출력
+@csrf_exempt
+def interaction_ajax(request):
+    inter_disease = request.POST.get('disease','')
+    inter_pill = request.POST.get('pill', '')
+    query1 = f"select 권장식재료 from disease_table where 질병명 = \'{inter_disease}\'"
+    query2 = f"select MERGED_CONTENTS from pill_table where DNAME = \'{inter_pill}\'"
+    disease = connection(query1)
+    pill = connection(query2)
+    response_data = {
+        'result1': disease,
+        'result2': pill
+    }
+    return JsonResponse(response_data)
+    
     
 
 #-------------------------------------------------------------------------------------------------------#

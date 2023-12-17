@@ -17,4 +17,5 @@ urlpatterns = [
     path('delete_info/', views.delete_info, name='delete_info'),
     path('detail/', views.detail, name='detail'),
     path('detail_ajax/', views.detail_ajax, name='detail_ajax'),
+    path('interaction_ajax/', views.interaction_ajax, name='interaction_ajax'),
 ]

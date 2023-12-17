@@ -76,10 +76,11 @@
         // 로컬 스토리지에서 데이터 읽기
         var recipetitle = localStorage.getItem('recipetitle');
         var recipe_step = localStorage.getItem('recipe_step');
+        var recipe_ingre = localStorage.getItem('recipe_ingre');
         
         if (recipe_step) {
             // 읽은 데이터를 페이지에 추가
-            $("#detail-container").html("<h3>" + recipetitle + "</h3><br>" + "<p>" + recipe_step + "</p>");
+            $("#detail-container").html("<h3>" + recipetitle + "</h3><br>" +"<p>" + recipe_ingre + "</p><br>"+ "<p>" + recipe_step + "</p>");
         };
 
         var pTag = $('#detail-container p');

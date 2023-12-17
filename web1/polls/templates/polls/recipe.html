@@ -36,9 +36,13 @@
         <div class="masthead-heading text-uppercase">선호음식 선택</div>
     </header>
     <!-- Services-->
-    <div class="div-in-result">
+    <div class="div-in-result" style="display: none;">
         <p class='p-disease'>{{ disease }}</p>
         <p class='p-pill'>{{ pill }}</p>
+    </div>
+    <div class="div-interaction">
+        
+        
     </div>
 
 <div class="result-container">
@@ -90,8 +94,38 @@
     var reachedEnd = false;
     var btnvalue;
     var recvalue;
-    
+
     $(document).ready(function() {
+        
+        var diseasevalue = $('.p-disease').text();
+        var pillvalue = $('.p-pill').text();
+
+        $.ajax({
+            type: 'POST',
+            url: '/interaction_ajax/',
+            data: {
+                disease: diseasevalue,
+                pill: pillvalue
+            },
+            success: function(response) {
+                var interaction = $('.div-interaction');
+                var disease = $('<p>').text(response.result1);
+                interaction.append(disease);
+                var pill = $('<p>').text(response.result2);
+                interaction.append(pill);
+            },
+            error: function(error) {
+                console.log('에러: ' + error);
+            }
+        });
+
+
+
+
+
+
+
+
         const loading_page = $("#load");
         $(document).ajaxStart(function() {
             loading_page.show();
@@ -195,7 +229,8 @@
                 success: function(response) {
                     // 로컬 스토리지에 데이터 저장
                     localStorage.setItem('recipetitle', response.recipetitle);
-                    localStorage.setItem('recipe_step', response.recipe_steps);
+                    localStorage.setItem('recipe_step', response.recipe_step);
+                    localStorage.setItem('recipetitle', response.recipe_ingre);
                     // /detail로 이동
                     window.location.href = '/detail/';
 
@@ -206,6 +241,7 @@
             });
         });
     });
+
 </script>
 </body>
 </html>
