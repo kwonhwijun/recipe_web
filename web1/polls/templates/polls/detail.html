@@ -80,7 +80,7 @@
         
         if (recipe_step) {
             // 읽은 데이터를 페이지에 추가
-            $("#detail-container").html("<h3>" + recipetitle + "</h3><br>" +"<div>" + recipe_ingre + "</div><br>"+ "<p>" + recipe_step + "</p>");
+            $("#detail-container").html("<h3>" + recipetitle + "</h3><br><h5>[식재료]</h5>" + "<div>" + recipe_ingre + "</div><br><h5>[조리 순서]</h5>"+ "<p>" + recipe_step + "</p>");
         };
 
         var pTag = $('#detail-container p');
@@ -102,7 +102,11 @@
         }
         // 출력
         var output = result.join(',<br>');
-        pTag.html(output);    
+        pTag.html(output);
+        });
+
+        // 결과 출력
+        console.log(result);
     });
 </script>
 </body>

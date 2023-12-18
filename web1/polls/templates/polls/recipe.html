@@ -109,7 +109,7 @@
             },
             success: function(response) {
                 var interaction = $('.div-interaction');
-                var disease = $('<p>').text('권장식재료: ' + response.result1.good_ingre + '/주의식재료: ' + response.result1.bad_ingre);
+                var disease = $('<p>').text('권장식재료: ' + response.result1.good_ingre + ' / 주의식재료: ' + response.result1.bad_ingre);
                 interaction.append(disease);
                 var pill = $('<p>').text('약 상호작용: ' + response.result2);
                 interaction.append(pill);
