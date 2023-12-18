@@ -69,6 +69,31 @@ def matrix_decomposition(matrix, n = 100):
     print(f"{df.shape[0]}개의 레시피, {df.shape[1]}개의 식재료 -> {n}차원으로 재표현 완료")
     return title, list(cols)[1:], recipe_vec, ingredient_vec
 
+def sparse_matrix_decomposition(matrix, n = 100):
+    def normalize_recipe(input):
+        # 1번 이상 등장한 식재료만 사용
+        input = input.loc[:, (input  != 0.0).sum() >1]
+        d1 = input.iloc[:,0] # 타이틀
+        # 칼럼에 대한 min-max
+        d2 = input.iloc[:, 1:].apply(lambda x: x/max(x), axis = 0) # 정규화 (min = 0 이므로)
+        df =pd.concat([d1, d2], axis= 1)
+        # 행에 대한 min-max
+        d3 = df.iloc[:,0]
+        d4 = df.iloc[:,1:].apply(lambda x: x/max(x), axis =1) # 정규화 (min = 0 이므로)
+        df =pd.concat([d1, d2], axis= 1)
+        return df
+    matrix = normalize_recipe(matrix)
+    cols = matrix.columns
+    title = matrix.recipe_title
+    df = matrix.drop(columns ='recipe_title').copy()
+    sparse_matrix = csc_matrix(df.values)
+    U, S, V = svds(sparse_matrix, k = n)
+    recipe_vec = U@np.diag(S)
+    ingredient_vec = V.T@np.diag(S)
+    print(f"{df.shape[0]}개의 레시피, {df.shape[1]}개의 식재료 -> {n}차원으로 재표현 완료")
+    return title, list(cols)[1:], recipe_vec, ingredient_vec
+
+
 
 def svd_tsne(matrix, n =2):
 
