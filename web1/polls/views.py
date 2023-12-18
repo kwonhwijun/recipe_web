@@ -45,7 +45,16 @@ def input_ajax(request):
         disease = request.POST.get('disease', '')
         pill = request.POST.get('pill', '')
         user_id = request.POST.get('user_id', '')
+        if not disease and not pill:
+            return
+        if not disease.replace(" ", "") and not pill.replace(" ", ""):
+            return
         
+        if not disease or not disease.replace(" ", ""):
+            disease = ' '
+        if not pill or not pill.replace(" ", ""):
+            pill = ' '
+            
         query = f'insert into user_input values (\'{user_id}\', \'{disease}\', \'{pill}\')'  
               
         connection_idu(query)
@@ -194,8 +203,8 @@ def interaction_ajax(request):
     bad_ingre = []
 
     for row in disease:
-        good_ingre.append(row[0])  # Assuming '권장식재료' is the first column
-        bad_ingre.append(row[1])   # Assuming '주의식재료' is the second column
+        good_ingre.append(row[0])
+        bad_ingre.append(row[1])
     
     response_data = {
         'result1': {
