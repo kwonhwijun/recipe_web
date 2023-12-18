@@ -36,9 +36,15 @@
         <div class="masthead-heading text-uppercase">선호음식 선택</div>
     </header>
     <!-- Services-->
-    <div class="div-in-result" style="display: none;">
+    <div class="div-in-result">
         <p class='p-disease'>{{ disease }}</p>
-        <p class='p-pill'>{{ pill }}</p>
+        <p class='p-pill'>
+            <ul id='multi-class'>
+            {% for pill_name in pill %}
+              <li>{{ pill_name }}</li>
+            {% endfor %}
+            </ul>
+        </p>
     </div>
     <div class="div-interaction">
         
@@ -95,17 +101,19 @@
     var btnvalue;
     var recvalue;
 
-    $(document).ready(function() {
-        
+    $(document).ready(function() {        
         var diseasevalue = $('.p-disease').text();
-        var pillvalue = $('.p-pill').text();
+        var pillvalue = [];
+            $('#multi-class li').each(function() {
+                pillvalue.push($(this).text());
+            });  
 
         $.ajax({
             type: 'POST',
             url: '/interaction_ajax/',
             data: {
                 disease: diseasevalue,
-                pill: pillvalue
+                pillvalue: JSON.stringify(pillvalue)
             },
             success: function(response) {
                 var interaction = $('.div-interaction');
@@ -128,19 +136,24 @@
         });
         // 모든 리소스가 로드된 후에 실행
         $(window).on("load", function() {
-            loading_page.hide(); // 로딩이 완료되면 loading.html을 숨김
+            loading_page.hide();
         });
     
         // 해당 버튼 누르면 전 페이지에서 입력한 값과 버튼 value값을 ajax로 보냄
         $("button[id^='button_']").on("click", function() {
             var btnvalue = $(this).text();
             var diseasevalue = $('.p-disease').text();
-            var pillvalue = $('.p-pill').text();
-    
+           // var pillvalue = $('.p-pill').text();
+            var pillvalue = [];
+            $('#multi-class li').each(function() {
+                pillvalue.push($(this).text());
+            });    
+
+            console.log(pillvalue)
             $.ajax({
                 type: 'POST',
                 url: '/output_test/',
-                data: { btnvalue: btnvalue, diseasevalue: diseasevalue, pillvalue: pillvalue},
+                data: { btnvalue: btnvalue, diseasevalue: diseasevalue, pillvalue: JSON.stringify(pillvalue)},
                 success: function(response) {
                     var resultDiv = $("#result-div");
                     resultDiv.empty();
@@ -171,7 +184,7 @@
                                 $.ajax({
                                     type: 'POST',
                                     url: '/output_test/',
-                                    data: { btnvalue: btnvalue, diseasevalue: diseasevalue, pillvalue: pillvalue, page: page },
+                                    data: { btnvalue: btnvalue, diseasevalue: diseasevalue, pillvalue: JSON.stringify(pillvalue), page: page },
                                     success: function(response) {
                                         var resultDiv = $("#result-div");
                     

@@ -39,6 +39,7 @@
             <!-- 추가될 공간 -->
         </div>
     </div>
+    <button type="text" id="rnn-btn">rnn테스트</button>
 
     <!-- Footer-->
     <footer class="footer py-4">
@@ -102,7 +103,21 @@
         }
         // 출력
         var output = result.join(',<br>');
-        pTag.html(output);    
+        pTag.html(output);
+        
+        $("#rnn-btn").on("click", function() {           
+            $.ajax({
+                type: 'POST',
+                url: '/rnn_ajax/',
+                data: {recipe_step: recipe_step},
+                success: function(response) {
+                   console.log(response)
+                },
+                error: function(response){
+
+                }
+        });
+        });
     });
 </script>
 </body>

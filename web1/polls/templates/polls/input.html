@@ -63,7 +63,7 @@
                         </datalist>
                     </div>
                     <div class="mb-3">
-                        <label for="pillForm" class="form-label">복용중인 약:</label>
+                        <label for="pillForm" class="form-label">복용중인 약:</label><input id="add-pill" type="button" value= "약 추가">
                         <input id = "pillForm" class = "form-control" name="pill" type="text" list="pill_list" placeholder="약 이름">
                         <datalist id="pill_list">
                             {% for pill_name in pill_list %}
@@ -264,6 +264,41 @@
         });
         $("#hide-btn").on("click", function () {
             $('#user-result').toggle() // 숨김처리 했던 입력정보 출력하기!
+        });
+
+
+        // 약 입력창 추가 버튼
+        var counter = 1;
+
+        // "약 추가" 버튼 클릭 이벤트 핸들러
+        $('#add-pill').click(function () {
+            // 새로운 입력 상자를 위한 고유한 ID 생성
+            var newInputId = 'pillForm_' + counter;
+
+            // 원본 입력 상자를 복제하고 속성을 업데이트
+            var newInput = $('#pillForm').clone().attr({
+                'id': newInputId,
+                'name': 'pill'
+            });
+
+            var deleteButton = $('<button type="button" class="delete-pill">삭제</button>');
+            deleteButton.click(function () {
+                $(newInput).remove(); // 입력 상자 제거
+                $(this).remove(); // 삭제 버튼 제거
+                counter = 1; // 카운터 초기화
+            });
+            // 새로운 입력 상자 및 삭제 버튼을 폼에 추가
+            $('#pillForm').parent().append(newInput).append(deleteButton);
+
+            // 다음 고유 ID를 위해 카운터 증가
+            counter++;
+        });
+
+        // 삭제 버튼 클릭 이벤트 핸들러 (동적으로 추가된 삭제 버튼에 대한 이벤트 위임)
+        $(document).on('click', '.delete-pill', function () {
+            $(this).prev().remove(); // 입력 상자 제거
+            $(this).remove(); // 삭제 버튼 제거
+            counter = 1; // 카운터 초기화
         });
     });
 </script>
