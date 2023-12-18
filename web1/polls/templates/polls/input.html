@@ -36,6 +36,15 @@
             align-items: center;
         }
 
+        .input-container {
+            position: relative;
+        }
+        .delete-pill{
+            zoom:0.8;
+            padding-right: 20px;
+            padding-left: 20px;
+        }
+
     </style>
 </head>
 <body id="page-top">
@@ -63,7 +72,10 @@
                         </datalist>
                     </div>
                     <div class="mb-3">
-                        <label for="pillForm" class="form-label">복용중인 약:</label><input id="add-pill" type="button" value= "약 추가">
+                        <div>
+                            <label for="pillForm" class="form-label">복용중인 약:</label>
+                            <input id="add-pill" class="btn btn-info" type="button" value= "추가" style="float: right;">
+                        </div>
                         <input id = "pillForm" class = "form-control" name="pill" type="text" list="pill_list" placeholder="약 이름">
                         <datalist id="pill_list">
                             {% for pill_name in pill_list %}
@@ -281,14 +293,29 @@
                 'name': 'pill'
             });
 
-            var deleteButton = $('<button type="button" class="delete-pill">삭제</button>');
+            newInput.css({
+                'width':'80%',
+                'margin-right': '7%'
+            });
+
+            var deleteButton = $('<button type="button" class="delete-pill btn btn-danger">삭제</button>');
             deleteButton.click(function () {
-                $(newInput).remove(); // 입력 상자 제거
-                $(this).remove(); // 삭제 버튼 제거
+                $(newcontainer).remove()
                 counter = 1; // 카운터 초기화
             });
+
+            var newcontainer = $('<div class="input-container"></div>');
             // 새로운 입력 상자 및 삭제 버튼을 폼에 추가
-            $('#pillForm').parent().append(newInput).append(deleteButton);
+            newcontainer.append(newInput).append(deleteButton);
+
+            // 새로운 div를 폼에 추가
+            $('#pillForm').parent().append(newcontainer);
+
+            newcontainer.css({
+                'display': 'flex',
+                'align-items': 'center',
+            });
+        
 
             // 다음 고유 ID를 위해 카운터 증가
             counter++;
