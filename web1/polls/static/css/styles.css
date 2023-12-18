@@ -10860,6 +10860,8 @@ body {
 
 p {
   line-height: 1.75;
+  margin: 25px;
+  margin-bottom: 15px;
 }
 
 .page-section {
