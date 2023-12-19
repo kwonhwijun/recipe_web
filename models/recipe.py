@@ -214,62 +214,11 @@ def recipe_food_matrix(data):
     recipe_ingredients_df.to_csv(f'matrix/food_matrix_{len(data)}.csv')
     return recipe_ingredients_df
 
-#---------------------------------------------------------------------------------------------------#
-# 재료 쪼갠 후 레시피별 영양소 나오는 테이블
-
-def recipe_nutri(new_recipe1, nutri_df):
-    file_path = r"data\change.txt"
-    unit_conversion = {}
-    with open(file_path, 'r', encoding='utf-8') as file:
-        unit_conversion = {line.split()[0]: line.split()[1] for line in file if line.split()[1].isdigit()}
-
-
-#-------------------- 여기서 부터 --------------------#
-# # txt 파일 경로
-# file_path = r"C:\Users\admin\OneDrive\바탕 화면\change2.txt"
-
-# # 빈 리스트 초기화
-# data = []
-
-# # 텍스트 파일 읽기
-# with open(file_path, 'r', encoding='utf-8') as file:
-#     lines = file.readlines()
-
-# # 각 줄에 대해 처리
-# for line in lines:
-#     # 공백을 기준으로 열과 값 분리
-#     parts = line.split()    
-#     # 딕셔너리로 저장
-#     row_data = {'ingredients': parts[0], 'unit': parts[1], 'value': parts[2]}    
-#     # 리스트에 추가
-#     data.append(row_data)
-
-# df11  = pd.DataFrame(data)
-# # dict으로 저장해서 속도 향상
-# df11_dict = df11.set_index(['ingredients', 'unit']).to_dict()['value']
-
-# for index, row in new_recipe1.iterrows():
-#     for i in range(1, 25):
-#         ingredient_col = f"ingredient{i}"
-#         quantity_col = f"quantity{i}"
-#         unit_col = f"unit{i}"
-
-#         ingredient_value = row[ingredient_col] # ingredient{i} 행 데이터
-#         unit_value = row[unit_col] # unit_col{i} 행 데이터
-
-#         # df11_dict에서 일치하는 값을 찾아서 new_recipe1에 채우기
-#         if (ingredient_value, unit_value) in df11_dict:
-#             new_recipe1.at[index, unit_col] = df11_dict[(ingredient_value, unit_value)]
-    #-------------------- 이부분까지 --------------------#
-
-
+# 5. 재료 쪼갠 후 레시피별 영양소 나오는 테이블
 def recipe_nutri(new_recipe1, nutri_df):
     warnings.filterwarnings('ignore', category= UserWarning)
     warnings.filterwarnings('ignore', category=pd.errors.PerformanceWarning)
     warnings.filterwarnings('ignore', category=pd.errors.SettingWithCopyWarning)
-
-    #-------------------- 여기서 부터 --------------------#
-    # txt 파일 경로 (딕셔너리 수정시 수정 필요함)
     file_path = r"data\change.txt"
     unit_conversion = {}
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -294,8 +243,6 @@ def recipe_nutri(new_recipe1, nutri_df):
         column_name = f'unit{i}'
         if column_name in new_recipe1.columns:
             new_recipe1[column_name] = new_recipe1[column_name].apply(lambda x: df_dict.get(x) if pd.notna(x) and not re.match(r'\d+[^\d]*$', str(x)) else x)
-    
-    #-------------------- 이부분까지 --------------------#
     
     # new_recipe1에 recipe_title, ingredient{i}, quantity{i}, unit{i}만 저장
     new_recipe1 = new_recipe1[['recipe_title'] + [f'{name}{i}' for i in range(1, 14) for name in ['ingredient', 'quantity', 'unit']]]
