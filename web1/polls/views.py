@@ -14,7 +14,6 @@ from torch.nn.functional import cosine_similarity as cosine_similarity1
 from tqdm import tqdm
 import numpy as np
 
-
 import numpy as np
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
@@ -373,8 +372,7 @@ def output_test(request):
     return JsonResponse({'image_urls': image_urls, 'page': page, 'has_next': len(output_page) == per_page})
 
 # /rnn 식재료 바꿨을때 레시피 출력
-        # 식재료 RNN 모델 정의
-        
+# # 식재료 RNN 모델 정의        
 class RNNNoun(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super(RNNNoun, self).__init__()
@@ -393,6 +391,7 @@ class RNNNoun(nn.Module):
         out3 = self.softmax(out2)
         return out1, out2, out3
 
+# /rnn ajax
 @csrf_exempt
 def rnn_ajax(request):
     if request.method == 'POST':
@@ -479,13 +478,6 @@ def rnn_ajax(request):
         model_noun.load_state_dict(checkpoint['model_state_dict'])
         optimizer_noun.load_state_dict(checkpoint['optimizer_state_dict'])
         
-
-                    
-        # 하이퍼파라미터 설정
-        # input_size_noun = checkpoint['input_size'] # 입력 크기
-        # hidden_size_noun =  checkpoint['hidden_size']  # 은닉 상태 크기
-        # output_size_noun = checkpoint['output_size']  # 출력 크기
-
         sliced_recipe_tensor = []
         for sliced_recipe in recipe_vec:
             sliced_recipe = torch.tensor(sliced_recipe).unsqueeze(0)

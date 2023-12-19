@@ -48,7 +48,7 @@
         margin: 3%;
         margin-top: 2%;
         font-size: 15px;
-        z-index: 999;
+        z-index: 98;
         background-color: rgba(255, 255, 255, 0.5);
     }
     .shape{
@@ -191,8 +191,6 @@
             $('#multi-class li').each(function() {
                 pillvalue.push($(this).text());
             });    
-
-            console.log(pillvalue)
             $.ajax({
                 type: 'POST',
                 url: '/output_test/',
