@@ -143,7 +143,6 @@
         $("button[id^='button_']").on("click", function() {
             var btnvalue = $(this).text();
             var diseasevalue = $('.p-disease').text();
-           // var pillvalue = $('.p-pill').text();
             var pillvalue = [];
             $('#multi-class li').each(function() {
                 pillvalue.push($(this).text());
@@ -233,9 +232,6 @@
                 data: {recipetitle: recipetitle},
                 success: function(response) {
                     // 로컬 스토리지에 데이터 저장
-                    console.log(response.recipetitle)
-                    console.log(response.recipe_step)
-                    console.log(response.recipe_ingre)
                     localStorage.setItem('recipetitle', response.recipetitle);
                     localStorage.setItem('recipe_step', response.recipe_step);
                     localStorage.setItem('recipe_ingre', response.recipe_ingre);

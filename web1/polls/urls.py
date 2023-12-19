@@ -19,4 +19,5 @@ urlpatterns = [
     path('detail_ajax/', views.detail_ajax, name='detail_ajax'),
     path('interaction_ajax/', views.interaction_ajax, name='interaction_ajax'),
     path('rnn_ajax/', views.rnn_ajax, name='rnn_ajax'),
+    path('rnn/', views.rnn_page, name='rnn_page'),
 ]

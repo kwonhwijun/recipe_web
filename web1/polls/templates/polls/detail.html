@@ -24,6 +24,10 @@
             width: 80%;
             margin: 25px;
         }
+        #rnn-div{
+            width: 80%;
+            margin: 25px;
+        }
     </style>
 </head>
 <body>
@@ -38,8 +42,20 @@
         <div id="detail-container">
             <!-- 추가될 공간 -->
         </div>
+        <div id='rnn-div'>
+            <form action="{% url 'polls:rnn_page' %}" method="POST">
+                {% csrf_token %}
+                <label for='bf-ingre'>변경하고 싶은 식재료:</label>
+                <input type="text" id='bf-ingre' name='before' placeholder='변경 전 식재료'>
+    
+                <label for='af-ingre'>변경 할 식재료:</label>
+                <input type="text" id='af-ingre' name='after' placeholder='변경 후 식재료'>
+    
+                <button type="submit">변경</button>   
+            </form>
+        <div>
     </div>
-    <button type="text" id="rnn-btn">rnn테스트</button>
+    
 
     <!-- Footer-->
     <footer class="footer py-4">
@@ -104,6 +120,14 @@
         // 출력
         var output = result.join(',<br>');
         pTag.html(output);
+
+        // 뒤로가기 키 누르면 로컬스토레지 삭제
+        $(window).on('popstate', function() {
+            // localStorage에서 특정 항목 제거
+            localStorage.removeItem('recipetitle');
+            localStorage.removeItem('recipe_step');
+            localStorage.removeItem('recipe_ingre');
+        });
         
         $("#rnn-btn").on("click", function() {           
             $.ajax({
