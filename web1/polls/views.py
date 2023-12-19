@@ -258,11 +258,14 @@ def output_test(request):
     # 받아온값 리스트 형식으로 변환
     disease_name = [disease_name]
     
-    with open(r'polls/data/recipe/recipe.pickle', 'rb') as file:
+    with open(r'polls/data/recipe/recipe_cocnat.pickle', 'rb') as file:
         recipe_dict = pickle.load(file)
 
-    with open(r'polls/data/recipe/ingre.pickle', 'rb') as file:
+    with open(r'polls/data/recipe/ingre_vec_150.pickle', 'rb') as file:
         ingre_dict = pickle.load(file)
+        
+    with open(r'polls/data/recipe/nutri_vec_150.pickle', 'rb') as file:
+        nutri_dict = pickle.load(file)
 
     with open(r'polls/data/recipe/category.pickle', 'rb') as file:
         category_dict = pickle.load(file)   
@@ -285,6 +288,7 @@ def output_test(request):
             for inter in interaction.keys():
                 if not pd.isna(med_dict[med][inter]):
                     interaction[inter].extend([value.strip() for value in med_dict[med][inter].split(',')])
+            
         # 질병 정보 반영
         for dis in dis_list :
             for inter in interaction.keys() :

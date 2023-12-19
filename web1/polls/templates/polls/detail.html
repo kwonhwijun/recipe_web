@@ -28,6 +28,11 @@
             width: 80%;
             margin: 25px;
         }
+        .rnn-input {
+            width: 40%;
+            border: 1px solid #ccc;
+            padding: 10px;
+          }
     </style>
 </head>
 <body>
@@ -45,15 +50,17 @@
         <div id='rnn-div'>
             <form action="{% url 'polls:rnn_page' %}" method="POST">
                 {% csrf_token %}
-                <label for='bf-ingre'>변경하고 싶은 식재료:</label>
-                <input type="text" id='bf-ingre' name='before' placeholder='변경 전 식재료'>
-    
-                <label for='af-ingre'>변경 할 식재료:</label>
-                <input type="text" id='af-ingre' name='after' placeholder='변경 후 식재료'>
-    
+                <div class="rnn-input">
+                    <label for='bf-ingre'>변경하고 싶은 식재료:</label>
+                    <input type="text" id='bf-ingre' name='before' placeholder='변경 전 식재료'>
+                </div>
+                <div class="rnn-input" style="float: right;">
+                    <label for='af-ingre'>변경 할 식재료:</label>
+                    <input type="text" id='af-ingre' name='after' placeholder='변경 후 식재료'>
+                </div>
                 <button type="submit">변경</button>   
             </form>
-        <div>
+        </div>
     </div>
     
 

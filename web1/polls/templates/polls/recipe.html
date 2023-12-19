@@ -8,14 +8,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+    <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/styles.css" rel="stylesheet"/>
 <style>
-    .div-in-result,
-    .div-interaction{
+    .div-in-result{
         border: 1px solid black;
         background-color: grey;
         color: white;
+        font-family: 'NanumSquareNeo';
     }
     .result-container{
         display: flex;
@@ -28,6 +28,26 @@
         width: 80%;
     }
 
+    .div-interaction{
+        border: 1px solid black;
+        background-color: grey;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+    }
+    .ingre-div,
+    .ingre2-div,
+    .inter-div{
+        width: 27%;
+        font-family: 'NanumSquareNeo';
+        border-style: solid;
+        border-color: black;
+        background-color: white;
+        color: black;
+        border-radius: 15px;
+        margin: 3%;
+        font-size: 15px;
+    }
 </style>
 </head>
 <body>
@@ -119,10 +139,18 @@
             },
             success: function(response) {
                 var interaction = $('.div-interaction');
-                var disease = $('<p>').text('권장식재료: ' + response.result1.good_ingre + ' / 주의식재료: ' + response.result1.bad_ingre);
-                interaction.append(disease);
-                var pill = $('<p>').text('약 상호작용: ' + response.result2);
-                interaction.append(pill);
+                var disease_div = $('<div class="ingre-div" style="text-align:center; margin-left:5%;">').text('권장식재료')
+                var disease = $('<p>').text(response.result1.good_ingre);
+                interaction.append(disease_div);
+                disease_div.append(disease)
+                var disease2_div = $('<div class="ingre2-div" style="text-align:center;">').text('주의식재료')
+                var disease2 = $('<p>').text(response.result1.bad_ingre);
+                interaction.append(disease2_div)
+                disease2_div.append(disease2)
+                var pill_div = $('<div class="inter-div" style="text-align:center; margin-right: 5%;">').text('약 상호작용')
+                var pill = $('<p>').text(response.result2);
+                interaction.append(pill_div);
+                pill_div.append(pill)
             },
             error: function(error) {
                 console.log('에러: ' + error);
