@@ -250,8 +250,3 @@ def recipe_cos(df, result, index): # df = 테이블, result = 특정 차원으�
 # raw_data = load_recipe(n=10000)
 # recipe = recipe_preprocessing(raw_data)
 # split_ingredient(recipe)
-
-
-## 기타 함수
-# -단위의 개수 세는 함수
-# -식재료 종류 세느 ㄴ함수 
