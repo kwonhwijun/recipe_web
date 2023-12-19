@@ -260,7 +260,7 @@ def output_test(request):
     # 받아온값 리스트 형식으로 변환
     disease_name = [disease_name]
     
-    with open(r'polls/data/recipe/recipe.pickle', 'rb') as file:
+    with open(r'polls/data/recipe/recipe_dict.pickle', 'rb') as file:
         recipe_dict = pickle.load(file)
 
     with open(r'polls/data/recipe/ingre_dict.pickle', 'rb') as file:
