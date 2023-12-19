@@ -9,6 +9,8 @@ from konlpy.tag import Okt
 import re
 import torch
 import torch.nn as nn
+from torch.nn.functional import cosine_similarity as cosine_similarity1
+
 from tqdm import tqdm
 import numpy as np
 
@@ -258,14 +260,14 @@ def output_test(request):
     # 받아온값 리스트 형식으로 변환
     disease_name = [disease_name]
     
-    with open(r'polls/data/recipe/recipe_cocnat.pickle', 'rb') as file:
+    with open(r'polls/data/recipe/recipe.pickle', 'rb') as file:
         recipe_dict = pickle.load(file)
 
-    with open(r'polls/data/recipe/ingre_vec_150.pickle', 'rb') as file:
+    with open(r'polls/data/recipe/ingre.pickle', 'rb') as file:
         ingre_dict = pickle.load(file)
         
-    with open(r'polls/data/recipe/nutri_vec_150.pickle', 'rb') as file:
-        nutri_dict = pickle.load(file)
+    # with open(r'polls/data/recipe/nutri_vec_150.pickle', 'rb') as file:
+    #     nutri_dict = pickle.load(file)
 
     with open(r'polls/data/recipe/category.pickle', 'rb') as file:
         category_dict = pickle.load(file)   
@@ -318,7 +320,6 @@ def output_test(request):
     
     # 수정해야될 부분
     output = recommend(pill_name, disease_name, btn_value)
-    print(output)
     od.init_oracle_client(lib_dir=r"C:\Program Files\Oracle\instantclient_21_12")
     conn = od.connect(user='admin', password='INISW2inisw2', dsn='inisw2_high')
     
@@ -330,9 +331,18 @@ def output_test(request):
     # 페이징 처리를 위해 시작 인덱스와 종료 인덱스 계산
     start_index = (page - 1) * per_page
     end_index = start_index + per_page
+    
+    results=[]
+    for recipe in output:
+        query = "SELECT recipe_title FROM final_recipe WHERE recipe_title = :recipe AND recipe_category_type = :btn_value"
+        exe = conn.cursor()
+        exe.execute(query, {'recipe': recipe, 'btn_value': btn_value})
+        data = exe.fetchone()
+        exe.close()
+        if data:
+            results.append(data[0])
 
-    # 페이지에 해당하는 데이터 가져오기
-    output_page = output[start_index:end_index]
+    output_page = results[start_index:end_index]
     result = []
     
     for recipe in output_page:
@@ -341,13 +351,12 @@ def output_test(request):
         exe.execute(query, {'recipe': recipe})
         data = exe.fetchone()
         exe.close()
-
         if data:
             result.append({
                 'RECIPE_TITLE': data[0],
                 'RECIPE_URL': data[1]
             })
-    
+    print(result)
     image_urls = []
     for recipe in result:
         # 각 레시피의 URL에서 이미지를 가져옴
@@ -363,6 +372,26 @@ def output_test(request):
     return JsonResponse({'image_urls': image_urls, 'page': page, 'has_next': len(output_page) == per_page})
 
 # /rnn 식재료 바꿨을때 레시피 출력
+        # 식재료 RNN 모델 정의
+        
+class RNNNoun(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(RNNNoun, self).__init__()
+        self.hidden_size = hidden_size
+        self.dense = nn.Linear(input_size, hidden_size)  # Dense layer
+        self.rnn = nn.RNN(hidden_size, hidden_size, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+        self.softmax = nn.LogSoftmax(dim=1)
+
+    def forward(self, x):
+        x = self.dense(x)
+        h0 = torch.zeros(1, x.size(0), self.hidden_size)
+        out, _ = self.rnn(x, h0)
+        out1 = out[:, -1, :]
+        out2 = self.fc(out1)
+        out3 = self.softmax(out2)
+        return out1, out2, out3
+
 @csrf_exempt
 def rnn_ajax(request):
     if request.method == 'POST':
@@ -376,7 +405,10 @@ def rnn_ajax(request):
             test = pickle.load(file)
         with open(r'polls/data/rnn/unique_stems.pkl', 'rb') as file:
             unique_stems = pickle.load(file)
-        
+        with open(r'polls/data/rnn/recipe_tensor_list.pkl', 'rb') as file:
+            recipe_tensor_list = pickle.load(file)
+        with open(r'polls/data/rnn/recipe_step_dict.pkl', 'rb') as f:
+            df1 = pickle.load(f)
         
         # Okt 형태소 분석기 초기화
         okt = Okt()
@@ -435,17 +467,57 @@ def rnn_ajax(request):
 
             recipe_vec.append(sliced_vec)
             
-        # recipe_vec => nparray
-        example_array = np.array(recipe_vec)
+        checkpoint = torch.load(r'polls/data/rnn/model_checkpoint1.pth')
+        # 불러온 모델의 상태와 옵티마이저 상태 적용 
+        model_noun = RNNNoun(checkpoint['input_size'], checkpoint['hidden_size'], checkpoint['output_size'])
+        model_noun = model_noun.float()
 
-        # NumPy 배열을 리스트로 변환
-        serializable_list = example_array.tolist()
+        optimizer_noun = torch.optim.Adam(model_noun.parameters(), lr=0.001)
 
-        # 이제 리스트는 JSON으로 직렬화할 수 있습니다
-        json_data = json.dumps(serializable_list)
+        # 불러온 모델의 상태와 옵티마이저 상태 적용
+        model_noun.load_state_dict(checkpoint['model_state_dict'])
+        optimizer_noun.load_state_dict(checkpoint['optimizer_state_dict'])
         
-        print(new_input_data)
-        return JsonResponse(new_input_data , safe= False)
+
+                    
+        # 하이퍼파라미터 설정
+        # input_size_noun = checkpoint['input_size'] # 입력 크기
+        # hidden_size_noun =  checkpoint['hidden_size']  # 은닉 상태 크기
+        # output_size_noun = checkpoint['output_size']  # 출력 크기
+
+        sliced_recipe_tensor = []
+        for sliced_recipe in recipe_vec:
+            sliced_recipe = torch.tensor(sliced_recipe).unsqueeze(0)
+            sliced_recipe = sliced_recipe.float()
+            sliced_recipe = sliced_recipe.squeeze(-1)
+            out1, out2, out3 = model_noun(sliced_recipe)
+            sliced_recipe_tensor.append(out1)
+
+            
+        mean_tensor = torch.mean(torch.stack(sliced_recipe_tensor), dim=0)
+        # 손실 함수와 옵티마이저 설정
+        # criterion = nn.CrossEntropyLoss()
+        reference_tensor = mean_tensor  # 기준이 되는 텐서
+        
+        # 각 텐서들 간의 코사인 유사도 계산
+        similarities = []
+        for i, tensor in enumerate(recipe_tensor_list):
+            sim = cosine_similarity1(reference_tensor, tensor, dim = 1)
+            similarities.append((i, sim.item()))
+        # 두 번째 값에 따라 튜플 정렬
+        sorted_data = sorted(similarities, key=lambda x: x[1], reverse=True)
+
+        # 결과 출력
+        result_item = []
+        for item in sorted_data:
+            result_item.append(item[0])
+        
+        keys_list = list(df1.keys())
+        values_list = list(df1.values())
+
+        recipe_dict = [{'title': keys_list[i], 'recipe': values_list[i]} for i in result_item]
+        print(recipe_dict)
+        return JsonResponse(recipe_dict, safe= False)
       
 
 # /detail -> /rnn form태그로 변경 전, 후 식재료 입력정보 보내기

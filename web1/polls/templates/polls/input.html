@@ -13,7 +13,7 @@
         .border-div{
             border: 2px solid black;
             padding: 10px;
-            border-radius: 15px; 
+            border-radius: 15px;
         }
         #hide-btn{
             zoom:0.7;
@@ -58,7 +58,7 @@
         <div class="paading-div" style="padding-left: 20%; padding-right: 20%">            
             <div class="container mt-5">
                 <br>
-                <div class="border-div" style="background-color: grey">
+                <div class="border-div" style="background-color: #dcdcdc">
                 <div class="border-div-in" style="margin: 5%;">
                 <form action="{% url 'polls:input_result' %}" method="POST">
                     {% csrf_token %}

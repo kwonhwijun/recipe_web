@@ -10,6 +10,17 @@
         <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
         <link href="/static/css/styles.css?v=1" rel="stylesheet" />
     </head>
+    <style>
+        .test100{
+            background-image: url('/static/img/1.png');
+        }
+        .test101{
+            background-image: url('/static/img/2.png');
+        }
+        .test102{
+            background-image: url('/static/img/3.png');
+        }
+    </style>
     <body id="page-top">
         <!-- Navigation-->
         {% include 'polls/navigation.html' %}
@@ -31,26 +42,23 @@
                     <div class="col-md-4">
                         <span class="fa-stack fa-4x">
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-shopping-cart fa-stack-1x fa-inverse"></i>
+                            <i class="fas test100 fa-stack-1x fa-inverse"></i>
                         </span>
-                        <h4 class="my-3">가제1</h4>
-                        <p class="text-muted">1</p>
+                        <h4 class="my-3"><br>영양소 반영</h4>
                     </div>
                     <div class="col-md-4">
                         <span class="fa-stack fa-4x">
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
+                            <i class="fas test101 fa-stack-1x fa-inverse"></i>
                         </span>
-                        <h4 class="my-3">가제2</h4>
-                        <p class="text-muted">2</p>
+                        <h4 class="my-3"><br>식재료 대체 가능</h4>
                     </div>
                     <div class="col-md-4">
                         <span class="fa-stack fa-4x">
                             <i class="fas fa-circle fa-stack-2x text-primary"></i>
-                            <i class="fas fa-lock fa-stack-1x fa-inverse"></i>
+                            <i class="fas test102 fa-stack-1x fa-inverse"></i>
                         </span>
-                        <h4 class="my-3">가제3</h4>
-                        <p class="text-muted">3</p>
+                        <h4 class="my-3"><br>다제약물 고려</h4>
                     </div>
                 </div>
             </div>

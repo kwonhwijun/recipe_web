@@ -21,18 +21,10 @@
     
         }
         #detail-container{
-            width: 80%;
             margin: 25px;
         }
-        #rnn-div{
-            width: 80%;
-            margin: 25px;
-        }
-        .rnn-input {
-            width: 40%;
-            border: 1px solid #ccc;
-            padding: 10px;
-          }
+
+
     </style>
 </head>
 <body>
@@ -47,20 +39,21 @@
         <div id="detail-container">
             <!-- 추가될 공간 -->
         </div>
-        <div id='rnn-div'>
-            <form action="{% url 'polls:rnn_page' %}" method="POST">
+    </div>
+    <div>        
+        <form action="{% url 'polls:rnn_page' %}" method="POST">
                 {% csrf_token %}
                 <div class="rnn-input">
                     <label for='bf-ingre'>변경하고 싶은 식재료:</label>
                     <input type="text" id='bf-ingre' name='before' placeholder='변경 전 식재료'>
                 </div>
-                <div class="rnn-input" style="float: right;">
+                <div class="rnn-input">
                     <label for='af-ingre'>변경 할 식재료:</label>
                     <input type="text" id='af-ingre' name='after' placeholder='변경 후 식재료'>
                 </div>
-                <button type="submit">변경</button>   
-            </form>
-        </div>
+                <button type="submit">변경</button>
+            </div>   
+        </form>        
     </div>
     
 
@@ -136,6 +129,7 @@
             localStorage.removeItem('recipe_ingre');
         });
         
+        // 변경 버튼을 누르면 로컬스토리지에 저장된 recipe_step 데이터를 전송
         $("#rnn-btn").on("click", function() {           
             $.ajax({
                 type: 'POST',
