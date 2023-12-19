@@ -192,7 +192,8 @@ def detail(request):
 def detail_ajax(request):
     if request.method == 'POST':
         # div를 누르면 name로 저장된 recipetitle값을 받아옴
-        recipetitle = request.POST.get('recipetitle', '') 
+        recipetitle = request.POST.get('recipetitle', '')
+        recipeImg = request.POST.get('imageUrl', '') 
         
         # recipe_step과 ingrdients를 받기위해 조회
         query1 = f"select recipe_step from final_recipe where recipe_title = \'{recipetitle}\'"
@@ -203,7 +204,7 @@ def detail_ajax(request):
         data2 = connection(query2)
         
     # 저장된 값을 ajax 데이터 형식으로 변경    
-    response_data = {'recipetitle': recipetitle, 'recipe_step': data1, 'recipe_ingre': data2}
+    response_data = {'recipetitle': recipetitle, 'recipeImg': recipeImg, 'recipe_step': data1, 'recipe_ingre': data2}
     return JsonResponse(response_data)
 
 # /recipe - 상호작용 출력

@@ -270,13 +270,15 @@
         // 생성된 div를 눌렀을때 name에 담긴 해당 레시피명을 ajax로 보내기
         $("#result-div").on("click",".recipe-group",function() {
             var recipetitle = $(this).attr("name");
+            var imageUrl = $(this).find("img").attr("src");
             $.ajax({
                 type: 'POST',
                 url: '/detail_ajax/',
-                data: {recipetitle: recipetitle},
+                data: {recipetitle: recipetitle, imageUrl: imageUrl},
                 success: function(response) {
                     // 로컬 스토리지에 데이터 저장
                     localStorage.setItem('recipetitle', response.recipetitle);
+                    localStorage.setItem('recipeImg', response.recipeImg);
                     localStorage.setItem('recipe_step', response.recipe_step);
                     localStorage.setItem('recipe_ingre', response.recipe_ingre);
 

@@ -23,6 +23,10 @@
         #detail-container{
             margin: 25px;
         }
+        .rnn-div{
+            width: 95%;
+            margin: 25px;
+        }
 
 
     </style>
@@ -39,22 +43,23 @@
         <div id="detail-container">
             <!-- 추가될 공간 -->
         </div>
+        <div class='rnn-div'>        
+            <form action="{% url 'polls:rnn_page' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="rnn-input">
+                        <label for='bf-ingre' style="padding-bottom: 1%;">변경하고 싶은 식재료:</label>
+                        <input type="text" id='bf-ingre' name='before' placeholder='변경 전 식재료'>
+                    </div>
+                    <div class="rnn-input">
+                        <label for='af-ingre'>변경 할 식재료:</label>
+                        <input type="text" id='af-ingre' name='after' placeholder='변경 후 식재료'>
+                    </div>
+                    <button type="submit" class="btn btn-info" style="zoom:0.8;">변경</button>
+                </div>   
+            </form>        
+        </div>
     </div>
-    <div>        
-        <form action="{% url 'polls:rnn_page' %}" method="POST">
-                {% csrf_token %}
-                <div class="rnn-input">
-                    <label for='bf-ingre'>변경하고 싶은 식재료:</label>
-                    <input type="text" id='bf-ingre' name='before' placeholder='변경 전 식재료'>
-                </div>
-                <div class="rnn-input">
-                    <label for='af-ingre'>변경 할 식재료:</label>
-                    <input type="text" id='af-ingre' name='after' placeholder='변경 후 식재료'>
-                </div>
-                <button type="submit">변경</button>
-            </div>   
-        </form>        
-    </div>
+    
     
 
     <!-- Footer-->
@@ -94,10 +99,11 @@
         var recipetitle = localStorage.getItem('recipetitle');
         var recipe_step = localStorage.getItem('recipe_step');
         var recipe_ingre = localStorage.getItem('recipe_ingre');
+        var recipe_img = localStorage.getItem('recipeImg');
         
         if (recipe_step) {
             // 읽은 데이터를 페이지에 추가
-            $("#detail-container").html("<h3>" + recipetitle + "</h3><br><h5>[식재료]</h5>" + "<div>" + recipe_ingre + "</div><br><h5>[조리 순서]</h5>"+ "<p>" + recipe_step + "</p>");
+            $("#detail-container").html("<h3>" + recipetitle + "</h3><br>"+"<img src='"+recipe_img +"' style='width:200px; height: 200px;'/><br>"+"<h5>[식재료]</h5>"+"<div>" + recipe_ingre + "</div><br><h5>[조리 순서]</h5>"+ "<p>" + recipe_step + "</p>");
         };
 
         var pTag = $('#detail-container p');
@@ -127,6 +133,7 @@
             localStorage.removeItem('recipetitle');
             localStorage.removeItem('recipe_step');
             localStorage.removeItem('recipe_ingre');
+            localStorage.removeItem('recipe_img');
         });
         
         // 변경 버튼을 누르면 로컬스토리지에 저장된 recipe_step 데이터를 전송
