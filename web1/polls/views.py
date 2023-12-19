@@ -263,13 +263,13 @@ def output_test(request):
     with open(r'polls/data/recipe/recipe.pickle', 'rb') as file:
         recipe_dict = pickle.load(file)
 
-    with open(r'polls/data/recipe/ingre.pickle', 'rb') as file:
+    with open(r'polls/data/recipe/ingre_dict.pickle', 'rb') as file:
         ingre_dict = pickle.load(file)
         
-    with open(r'polls/data/recipe/nutri_vec_150.pickle', 'rb') as file:
+    with open(r'polls/data/recipe/nutri_dict.pickle', 'rb') as file:
         nutri_dict = pickle.load(file)
 
-    with open(r'polls/data/recipe/category.pickle', 'rb') as file:
+    with open(r'polls/data/recipe/category_120.pickle', 'rb') as file:
         category_dict = pickle.load(file)   
 
     rec_title = list(recipe_dict.keys()) # 키 리스트
