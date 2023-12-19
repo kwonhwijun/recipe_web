@@ -478,7 +478,7 @@ def rnn_ajax(request):
 
             recipe_vec.append(sliced_vec)
             
-        checkpoint = torch.load(r'polls/data/rnn/model_checkpoint1.pth')
+        checkpoint = torch.load(r'polls/data/rnn/model_checkpoint8.pth')
         # 불러온 모델의 상태와 옵티마이저 상태 적용 
         model_noun = RNNNoun(checkpoint['input_size'], checkpoint['hidden_size'], checkpoint['output_size'])
         model_noun = model_noun.float()
@@ -520,7 +520,7 @@ def rnn_ajax(request):
         values_list = list(df1.values())
 
         recipe_dict = [{'title': keys_list[i], 'recipe': values_list[i]} for i in result_item]
-        print(recipe_dict)
+        
         return JsonResponse(recipe_dict, safe= False)
       
 

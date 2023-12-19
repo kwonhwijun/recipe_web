@@ -217,8 +217,7 @@
                     console.log(response)
                     // ajax 성공시 무한스크롤 작동
                     $(window).scroll(function() {
-                        console.log('스크롤 이벤트 발생');
-                        if ($(window).scrollTop() == $(document).height() - $(window).height() - 200) {
+                        if ($(window).scrollTop() >= $(document.body).height() - $(window).height() - 200) {
                             // 스크롤이 맨 아래에 도달하면 새로운 페이지를 로드
                             console.log(reachedEnd, loading)
                             if (!reachedEnd && !loading) {
