@@ -351,6 +351,7 @@ def output_test(request):
         exe.close()
         if data:
             results.append(data[0])
+    print(results)
 
     output_page = results[start_index:end_index]
     result = []

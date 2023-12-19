@@ -214,10 +214,13 @@
                             resultDiv.append(recipeGroup);
                         }
                     }
+                    console.log(response)
                     // ajax 성공시 무한스크롤 작동
                     $(window).scroll(function() {
-                        if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+                        console.log('스크롤 이벤트 발생');
+                        if ($(window).scrollTop() == $(document).height() - $(window).height() - 200) {
                             // 스크롤이 맨 아래에 도달하면 새로운 페이지를 로드
+                            console.log(reachedEnd, loading)
                             if (!reachedEnd && !loading) {
                                 loading = true;
                                 page += 1;
@@ -227,28 +230,28 @@
                                     url: '/output_test/',
                                     data: { btnvalue: btnvalue, diseasevalue: diseasevalue, pillvalue: JSON.stringify(pillvalue), page: page },
                                     success: function(response) {
-                                        var resultDiv = $("#result-div");
-                    
-                                        if (response.has_next) {
-                                            for (var i = 0; i < response.image_urls.length; i++) {
-                                                var imageUrl = response.image_urls[i].image_url;
-                                                var recipeTitle = response.image_urls[i].recipe;
-                    
-                                                // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
-                                                if (imageUrl && recipeTitle) {
-                                                    // 새로운 <div>를 생성하여 레시피 정보를 감싼다
-                                                    var recipeGroup = $("<div class='recipe-group' name='" + recipeTitle + "'></div>");
-                                                    recipeGroup.append(`<p>${recipeTitle}</p>`);
-                                                    recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" style="width:90%; height: 80%;">`);
-                    
-                                                    // 최종적으로 resultDiv에 추가
-                                                    resultDiv.append(recipeGroup);
-                                                }
-                                            }
-                                        } else {
+                                        if (!response.has_next) {
                                             reachedEnd = true;
+                                            loading = false;                                           
                                         }
+
+                                        var resultDiv = $("#result-div");
+                                        console.log(response)
+                                        for (var i = 0; i < response.image_urls.length; i++) {
+                                            var imageUrl = response.image_urls[i].image_url;
+                                            var recipeTitle = response.image_urls[i].recipe;
                     
+                                            // 값이 있는 경우에만 HTML을 생성하도록 조건 추가
+                                            if (imageUrl && recipeTitle) {
+                                                // 새로운 <div>를 생성하여 레시피 정보를 감싼다
+                                                var recipeGroup = $("<div class='recipe-group' name='" + recipeTitle + "'></div>");
+                                                recipeGroup.append(`<p>${recipeTitle}</p>`);
+                                                recipeGroup.append(`<img src="${imageUrl}" alt="${recipeTitle}" style="width:90%; height: 80%;">`);
+                    
+                                                // 최종적으로 resultDiv에 추가
+                                                resultDiv.append(recipeGroup);
+                                            }
+                                        }                                                   
                                         loading = false;
                                     },
                                     error: function(error) {
