@@ -20,22 +20,27 @@
             align-items: center; 
     
         }
-        #detail-container{
+        #recipe-container{
             width: 80%;
             margin: 25px;
         }
     </style>
 </head>
 <body>
-    {% include 'polls/loading.html' %}
     <!-- Navigation-->
     {% include 'polls/navigation.html' %}
     <!-- Masthead-->
     <header class="masthead">
         <div class="masthead-heading text-uppercase">rnn 페이지</div>
     </header>
-    <div class='bf-class'>{{bf_ingre}}</div>
-    <div class='af-class'>{{af_ingre}}</div>
+    <div class='bf-class' style="display: none;">{{bf_ingre}}</div>
+    <div class='af-class' style="display: none;">{{af_ingre}}</div>
+
+    <div id="step-container">
+        <div id="recipe-container">
+            <!--추가될 공간 -->
+        </div>
+    </div>
 
     <!-- Footer-->
     <footer class="footer py-4">
@@ -59,22 +64,10 @@
 <body>
 <script>
     $(document).ready(function () {
-        const loading_page = $("#load");
-        $(document).ajaxStart(function() {
-            loading_page.show();
-        });
-        $(document).ajaxStop(function() {
-            loading_page.hide();
-        });
-
-        $(window).on("load", function() {
-            loading_page.hide();
-        });
-
         function onPageLoad(){
             var recipe_step = localStorage.getItem('recipe_step');
+            console.log(recipe_step)
             if(recipe_step){
-                console.log('데이터가 있음: ', recipe_step)
                 var before = $('.bf-class').text()
                 var after = $('.af-class').text() 
 
@@ -82,8 +75,8 @@
                     type: 'POST',
                     url: '/rnn_ajax/',
                     data: {recipe_step: recipe_step, before: before, after: after},
-                    success: function(response) {
-                        console.log(response) 
+                    success: function(recipe_dict) {
+                        displayRecipes(recipe_dict);
                     },
                     error: function(response){
                         alert('ajax 실패')
@@ -95,6 +88,24 @@
                 console.log('데이터가 없음');
             }
         }
+
+        function displayRecipes(recipe_dict) {
+            var container = $('#recipe-container');
+        
+            // 각 레시피를 반복하면서 HTML에 추가
+            for (var i = 0; i < 5 && i < recipe_dict.length; i++) {
+                var title = recipe_dict[i].title;
+                var recipeContent = recipe_dict[i].recipe;
+          
+                // HTML로 추가
+                var recipeHtml = '<div class="recipe">';
+                recipeHtml += '<h4>' + title + '</h4>';
+                recipeHtml += '<p>' + recipeContent + '</p>';
+                recipeHtml += '</div>';
+          
+                container.append(recipeHtml);
+          };
+        };
         // 뒤로가기 키 눌렀을때 다시 localStorage 정보 받아오기 위함
         $(window).on('popstate', onPageLoad);
         onPageLoad();        
