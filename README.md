@@ -15,3 +15,9 @@ NeuralRecipe는 사용자가 입력한 질명명, 약정보를 바탕으로 권�
 영양소 데이터는 USDA와 식품의약품안전처가 제공하는 데이터를 활용하였습니다.
 
 #### 흐름도
+<p align="center">
+  <img src="![12112](https://github.com/kwonhwijun/recipe_web/assets/113161447/5c9cb325-f0fe-4e58-b5dc-3ae425b5dd31)">
+</p>
+
+
+
