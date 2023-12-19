@@ -266,8 +266,8 @@ def output_test(request):
     with open(r'polls/data/recipe/ingre.pickle', 'rb') as file:
         ingre_dict = pickle.load(file)
         
-    # with open(r'polls/data/recipe/nutri_vec_150.pickle', 'rb') as file:
-    #     nutri_dict = pickle.load(file)
+    with open(r'polls/data/recipe/nutri_vec_150.pickle', 'rb') as file:
+        nutri_dict = pickle.load(file)
 
     with open(r'polls/data/recipe/category.pickle', 'rb') as file:
         category_dict = pickle.load(file)   
@@ -311,6 +311,16 @@ def output_test(request):
             for food in my_inter_dict['주의식재료']:
                 if food in ingre_dict :
                     my_food_vec_recommend -=  0.01 * ingre_dict[food]
+
+            for nutri in my_inter_dict['권장식재료']:
+                if nutri in nutri_dict :
+                    my_food_vec_recommend += 0.01* nutri_dict[food]
+            for nutri in my_inter_dict['주의식재료']:
+                if nutri in nutri_dict :
+                    my_food_vec_recommend -=  0.01 * nutri_dict[food]
+
+
+            
             sim = cosine_similarity([my_food_vec_recommend], rec_vec)[0]
             recommend_idx = np.argsort(sim)[::-1][:100]
 
